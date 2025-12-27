@@ -1,0 +1,13 @@
+{
+  "name": "blog-frontend",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev:web": "pnpm --filter web dev",
+    "build": "pnpm -r build"
+  },
+  "keywords": [],
+  "author": "Sameer Ali",
+  "license": "ISC",
+  "packageManager": "pnpm@10.25.0"
+}

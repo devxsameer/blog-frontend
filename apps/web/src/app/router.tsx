@@ -1,4 +1,4 @@
-// src/app/router.tsx
+// web/src/app/router.tsx
 import HomePage from "@/pages/Home";
 import { createBrowserRouter } from "react-router";
 
