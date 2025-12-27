@@ -1,9 +1,12 @@
 // src/main.tsx
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { RouterProvider } from 'react-router';
+import { router } from './app/router';
+import '@/styles/index.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <div>Web Blog App</div>
+    <RouterProvider router={router} />
   </StrictMode>,
-)
+);
