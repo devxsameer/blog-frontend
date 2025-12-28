@@ -1,8 +1,8 @@
 {
-  "name": "blog-frontend",
+  "name": "blog-platform",
   "version": "1.0.0",
   "private": true,
-  "description": "",
+  "description": "Production-grade blog frontend monorepo with public blog and admin dashboard, built using React, TypeScript, and pnpm workspaces.",
   "scripts": {
     "dev": "pnpm -r dev",
     "build": "pnpm -r build",
@@ -11,7 +11,13 @@
     "dev:web": "pnpm --filter web dev",
     "dev:dashboard": "pnpm --filter dashboard dev"
   },
-  "keywords": [],
+  "keywords": [
+    "monorepo",
+    "react",
+    "typescript",
+    "pnpm-workspaces",
+    "react-router"
+  ],
   "author": "Sameer Ali",
   "license": "ISC",
   "packageManager": "pnpm@10.25.0"
