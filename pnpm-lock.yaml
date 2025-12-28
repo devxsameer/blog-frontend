@@ -119,13 +119,17 @@ importers:
         version: 7.3.0(@types/node@24.10.4)(jiti@2.6.1)(lightningcss@1.30.2)
 
   packages/api-client:
+    dependencies:
+      '@blog/schemas':
+        specifier: workspace:*
+        version: link:../schemas
+      zod:
+        specifier: ^4.2.1
+        version: 4.2.1
     devDependencies:
       '@blog/prettier-config':
         specifier: workspace:*
         version: link:../prettier-config
-      '@blog/shared-types':
-        specifier: workspace:*
-        version: link:../shared-types
       prettier:
         specifier: ^3.7.4
         version: 3.7.4
@@ -160,7 +164,11 @@ importers:
         specifier: ^0.7.2
         version: 0.7.2(prettier@3.7.4)
 
-  packages/shared-types:
+  packages/schemas:
+    dependencies:
+      zod:
+        specifier: ^4.2.1
+        version: 4.2.1
     devDependencies:
       '@blog/prettier-config':
         specifier: workspace:*

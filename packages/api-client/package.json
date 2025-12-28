@@ -11,8 +11,11 @@
   "prettier": "@blog/prettier-config",
   "devDependencies": {
     "@blog/prettier-config": "workspace:*",
-    "@blog/shared-types": "workspace:*",
     "prettier": "^3.7.4",
     "prettier-plugin-tailwindcss": "^0.7.2"
+  },
+  "dependencies": {
+    "@blog/schemas": "workspace:*",
+    "zod": "^4.2.1"
   }
 }
