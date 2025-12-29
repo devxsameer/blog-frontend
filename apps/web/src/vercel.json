@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "https://blogapi.devxsameer.me/api/:path*"
-    }
-  ]
-}

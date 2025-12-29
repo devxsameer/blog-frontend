@@ -6,11 +6,10 @@ export type ValidationIssue = {
 };
 
 export class ValidationError extends ApiClientError {
-  constructor(
-    message: string,
-    public issues: ValidationIssue[],
-  ) {
+  public issues: ValidationIssue[];
+  constructor(message: string, issues: ValidationIssue[]) {
     super('VALIDATION_ERROR', 400, message);
     this.name = 'ValidationError';
+    this.issues = issues;
   }
 }
