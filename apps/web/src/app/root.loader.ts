@@ -9,6 +9,7 @@ export type RootLoaderData = {
     username: string;
     role: 'author' | 'admin' | 'user';
     email: string;
+    createdAt?: string;
   } | null;
 };
 

@@ -1,3 +1,3 @@
-import { authApi, postsApi } from '@blog/api-client';
+import { authApi, postsApi, commentsApi } from '@blog/api-client';
 
-export { authApi, postsApi };
+export { authApi, postsApi,commentsApi };

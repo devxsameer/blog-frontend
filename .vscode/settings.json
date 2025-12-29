@@ -1,3 +1,9 @@
 {
-  "conventionalCommits.scopes": ["web", "dashboard", "auth", "posts"]
+  "conventionalCommits.scopes": [
+    "web",
+    "dashboard",
+    "auth",
+    "posts",
+    "validation"
+  ]
 }

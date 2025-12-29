@@ -16,6 +16,9 @@ import PostPage from '@/pages/Post';
 import { postLoader, postsLoader } from '@/features/post/post.loaders';
 import PostsPage from '@/pages/Posts';
 import AboutPage from '@/pages/About';
+import ProfilePage from '@/pages/Profile';
+import { requireAuth } from '@/features/auth/auth.loaders';
+import { commentsLoader } from '@/features/comment/comment.loaders';
 
 export const router = createBrowserRouter([
   {
@@ -39,9 +42,23 @@ export const router = createBrowserRouter([
               { path: 'logout', action: logoutAction },
             ],
           },
+          { path: 'profile', Component: ProfilePage, loader: requireAuth },
           { path: 'about', Component: AboutPage },
           { path: 'posts', Component: PostsPage, loader: postsLoader },
-          { path: 'posts/:postSlug', Component: PostPage, loader: postLoader },
+          {
+            id: 'post',
+            path: 'posts/:postSlug',
+            Component: PostPage,
+            loader: postLoader,
+            children: [
+              {
+                id: 'comments',
+                index: true,
+                loader: commentsLoader,
+                // action: createCommentAction,
+              },
+            ],
+          },
           { path: '*', element: <ErrorPage /> },
         ],
       },
