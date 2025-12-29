@@ -1,27 +1,48 @@
 import { authHttp } from '../http/auth-http';
+import { unwrap } from '../unwrap';
 import { tokenStore } from '@blog/token-store';
 
 export const authApi = {
-  me() {
-    return authHttp<{ user: any }>('/api/auth/me');
+  async me() {
+    const { status, body } = await authHttp('/api/auth/me');
+    return unwrap<{ user: any }>(status, body);
   },
 
-  login(input: any) {
-    return authHttp<{ user: any; accessToken: string }>('/api/auth/login', {
+  async login(input: any) {
+    const { status, body } = await authHttp('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify(input),
     });
+
+    const data = unwrap<{ user: any; accessToken: string }>(status, body);
+
+    // If you still store access tokens client-side
+    tokenStore.set(data.accessToken);
+
+    return data;
   },
-  signup(input: any) {
-    return authHttp<{ user: any; accessToken: string }>('/api/auth/signup', {
+
+  async signup(input: any) {
+    const { status, body } = await authHttp('/api/auth/signup', {
       method: 'POST',
       body: JSON.stringify(input),
     });
+
+    const data = unwrap<{ user: any; accessToken: string }>(status, body);
+
+    tokenStore.set(data.accessToken);
+
+    return data;
   },
 
   async logout() {
     try {
-      await authHttp('/api/auth/logout', { method: 'POST' });
+      const { status, body } = await authHttp('/api/auth/logout', {
+        method: 'POST',
+      });
+
+      // Optional: backend might return success envelope
+      unwrap<void>(status, body);
     } finally {
       tokenStore.clear();
     }

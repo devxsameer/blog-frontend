@@ -15,14 +15,13 @@ async function refreshSession() {
   tokenStore.set(data.accessToken);
 }
 
-export async function authHttp<T>(
+export async function authHttp(
   input: RequestInfo,
   init: RequestInit = {},
   retry = true,
-): Promise<T> {
+): Promise<{ status: number; body: any }> {
   try {
-    const { status, body } = await http(input, init);
-    return unwrap<T>(status, body);
+    return await http(input, init);
   } catch (err) {
     if (!(err instanceof AuthError) || !retry) {
       throw err;
@@ -35,6 +34,6 @@ export async function authHttp<T>(
     }
 
     await refreshPromise;
-    return authHttp<T>(input, init, false);
+    return authHttp(input, init, false);
   }
 }

@@ -23,14 +23,19 @@ export async function loginAction({ request }: ActionFunctionArgs) {
 }
 
 export async function signupAction({ request }: ActionFunctionArgs) {
-  const data = Object.fromEntries(await request.formData());
+  const input = Object.fromEntries(await request.formData());
 
-  const res = await authApi.signup(data);
-
-  tokenStore.set(res.accessToken);
-  authStore.setUser(res.user);
-
-  throw redirect('/');
+  try {
+    const res = await authApi.signup(input);
+    tokenStore.set(res.accessToken);
+    authStore.setUser(res.user);
+    throw redirect('/');
+  } catch (err) {
+    if (err instanceof ValidationError) {
+      return err;
+    }
+    throw err;
+  }
 }
 
 export async function logoutAction() {

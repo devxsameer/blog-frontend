@@ -1,33 +1,61 @@
-import { useRouteError, isRouteErrorResponse, Link } from 'react-router';
+import { isRouteErrorResponse, useRouteError, Link } from 'react-router';
 
-export function ErrorPage({ status = 404 }) {
+export function ErrorPage() {
   const error = useRouteError();
 
-  // Handle specific HTTP-like errors (404, 401, etc.)
+  // Loader / action errors (Response thrown)
   if (isRouteErrorResponse(error)) {
-    if (error.status === 404) {
-      return (
-        <div className="p-8 text-center">
-          <h1>404: Not Found</h1>
-          <p>The page or resource you're looking for doesn't exist.</p>
-          <Link to="/" className="text-blue-500 underline">
-            Go Home
-          </Link>
-        </div>
-      );
-    }
+    switch (error.status) {
+      case 404:
+        return (
+          <div className="p-8 text-center">
+            <h1 className="text-2xl font-semibold">404 - Not Found</h1>
+            <p className="mt-2 text-gray-600">
+              The page or resource you're looking for doesn't exist.
+            </p>
+            <Link to="/" className="mt-4 inline-block underline">
+              Go home
+            </Link>
+          </div>
+        );
 
-    if (error.status === 401) {
-      return <div>You aren't authorized to see this.</div>;
+      case 401:
+        return (
+          <div className="p-8 text-center">
+            <h1 className="text-2xl font-semibold">Unauthorized</h1>
+            <p className="mt-2 text-gray-600">Please log in to continue.</p>
+            <Link to="/auth/login" className="mt-4 inline-block underline">
+              Login
+            </Link>
+          </div>
+        );
+
+      case 500:
+        return (
+          <div className="p-8 text-center">
+            <h1 className="text-2xl font-semibold">Server Error</h1>
+            <p className="mt-2 text-gray-600">
+              Something went wrong on our end.
+            </p>
+          </div>
+        );
     }
   }
 
-  // Handle generic code crashes or unexpected errors
+  // Runtime errors (JS crashes)
+  if (error instanceof Error) {
+    return (
+      <div className="p-8 text-center">
+        <h1 className="text-2xl font-semibold">Application Error</h1>
+        <p className="mt-2 text-gray-600">{error.message}</p>
+      </div>
+    );
+  }
+
+  // Truly unknown
   return (
-    <div className="p-8 text-center text-red-600">
-      <h1>${status}: Not Found</h1>
-      <h1>Oops! Something went wrong.</h1>
-      <p>{error instanceof Error ? error.message : 'Unknown Error'}</p>
+    <div className="p-8 text-center">
+      <h1 className="text-2xl font-semibold">Unexpected Error</h1>
     </div>
   );
 }

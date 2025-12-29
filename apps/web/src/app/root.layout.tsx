@@ -6,9 +6,7 @@ export function RootLayout() {
   return (
     <div className="font-outfit flex min-h-screen flex-col text-black hover:col-auto">
       <Header />
-      <div>
-        <Outlet />
-      </div>
+      <Outlet />
     </div>
   );
 }

@@ -12,6 +12,10 @@ import AuthLayout from '@/layouts/AuthLayout';
 import LoginPage from '@/features/auth/pages/Login';
 import SignupPage from '@/features/auth/pages/Signup';
 import { ErrorPage } from '@/pages/Error';
+import PostPage from '@/pages/Post';
+import { postLoader, postsLoader } from '@/features/post/post.loaders';
+import PostsPage from '@/pages/Posts';
+import AboutPage from '@/pages/About';
 
 export const router = createBrowserRouter([
   {
@@ -35,7 +39,10 @@ export const router = createBrowserRouter([
               { path: 'logout', action: logoutAction },
             ],
           },
-          { path: '*', element: <ErrorPage status={404} /> },
+          { path: 'about', Component: AboutPage },
+          { path: 'posts', Component: PostsPage, loader: postsLoader },
+          { path: 'posts/:postSlug', Component: PostPage, loader: postLoader },
+          { path: '*', element: <ErrorPage /> },
         ],
       },
     ],
