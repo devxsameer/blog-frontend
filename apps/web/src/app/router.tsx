@@ -19,6 +19,10 @@ import AboutPage from '@/pages/About';
 import ProfilePage from '@/pages/Profile';
 import { requireAuth } from '@/features/auth/auth.loaders';
 import { commentsLoader } from '@/features/comment/comment.loaders';
+import {
+  createCommentAction,
+  deleteCommentAction,
+} from '@/features/comment/comment.actions';
 
 export const router = createBrowserRouter([
   {
@@ -55,7 +59,16 @@ export const router = createBrowserRouter([
                 id: 'comments',
                 index: true,
                 loader: commentsLoader,
-                // action: createCommentAction,
+                action: createCommentAction,
+                shouldRevalidate: ({ actionResult }) => {
+                  return actionResult !== null;
+                },
+              },
+              {
+                path: 'comments/:commentId/delete',
+                action: deleteCommentAction,
+                shouldRevalidate: ({ actionResult }) =>
+                  actionResult !== undefined,
               },
             ],
           },

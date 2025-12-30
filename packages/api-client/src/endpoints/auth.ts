@@ -16,7 +16,6 @@ export const authApi = {
 
     const data = unwrap<{ user: any; accessToken: string }>(status, body);
 
-    // If you still store access tokens client-side
     tokenStore.set(data.accessToken);
 
     return data;
@@ -41,7 +40,6 @@ export const authApi = {
         method: 'POST',
       });
 
-      // Optional: backend might return success envelope
       unwrap<void>(status, body);
     } finally {
       tokenStore.clear();

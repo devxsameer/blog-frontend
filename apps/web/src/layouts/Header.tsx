@@ -35,7 +35,7 @@ export default function Header() {
               <NavLink to="/auth/login">Login</NavLink>
               <Link
                 to="/auth/signup"
-                className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800"
+                className="rounded-md bg-neutral-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-neutral-800"
               >
                 Sign up
               </Link>

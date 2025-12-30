@@ -1,21 +1,40 @@
+import { useEffect, useRef } from 'react';
 import { useFetcher } from 'react-router';
 
-export default function CommentForm({ parentId }: { parentId?: string }) {
+export default function CommentForm({
+  parentId,
+  onSuccess,
+}: {
+  parentId?: string;
+  onSuccess?: () => void;
+}) {
   const fetcher = useFetcher();
   const isSubmitting = fetcher.state === 'submitting';
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  useEffect(() => {
+    if (
+      fetcher.state === 'idle' &&
+      fetcher.data !== undefined &&
+      textareaRef.current
+    ) {
+      textareaRef.current.value = '';
+      onSuccess?.();
+    }
+  }, [fetcher.state, fetcher.data]);
   return (
     <fetcher.Form method="post" action="comments" className="mt-4">
-      <input type="hidden" name="parentId" value={parentId ?? ''} />
+      <input type="hidden" name="parentId" value={parentId} />
 
       <textarea
         name="content"
+        ref={textareaRef}
         required
         className="w-full rounded border p-2"
         placeholder={parentId ? 'Write a reply…' : 'Write a comment…'}
       />
 
-      <button disabled={isSubmitting} className="mt-2 text-sm underline">
+      <button disabled={isSubmitting} className="btn mt-2">
         {isSubmitting ? 'Posting…' : 'Post'}
       </button>
     </fetcher.Form>

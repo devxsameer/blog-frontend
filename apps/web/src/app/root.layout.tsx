@@ -1,12 +1,16 @@
 // web/src/app/root-layout.tsx
 import Header from '@/layouts/Header';
+import Breadcrumbs from '@/shared/components/Breadcrumbs';
 import { Outlet } from 'react-router';
 
 export function RootLayout() {
   return (
     <div className="font-outfit flex min-h-screen flex-col text-black hover:col-auto">
       <Header />
-      <Outlet />
+      <div className="mx-auto w-full max-w-6xl p-4 py-6">
+        <Breadcrumbs />
+        <Outlet />
+      </div>
     </div>
   );
 }

@@ -4,6 +4,7 @@
     "dashboard",
     "auth",
     "posts",
-    "validation"
+    "validation",
+    "comments"
   ]
 }

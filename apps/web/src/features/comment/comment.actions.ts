@@ -25,3 +25,13 @@ export async function createCommentAction({
 
   return null;
 }
+
+export async function deleteCommentAction({ params }: ActionFunctionArgs) {
+  if (!params.postSlug || !params.commentId) {
+    throw new Response('Bad Request', { status: 400 });
+  }
+
+  await commentsApi.delete(params.postSlug, params.commentId);
+
+  return null;
+}

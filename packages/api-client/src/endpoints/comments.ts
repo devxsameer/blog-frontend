@@ -7,6 +7,14 @@ export const commentsApi = {
     return unwrap<any[]>(status, body);
   },
 
+  async delete(slug: string, commentId: string) {
+    const { status, body } = await authHttp(
+      `/api/posts/${slug}/comments/${commentId}`,
+      { method: 'DELETE' },
+    );
+    return unwrap(status, body);
+  },
+
   async create(slug: string, input: { content: string; parentId?: string }) {
     const { status, body } = await authHttp(`/api/posts/${slug}/comments`, {
       method: 'POST',
