@@ -1,4 +1,4 @@
-// web/src/features/post/post.loaders.ts
+// web/src/features/post/loaders.ts
 import { postsApi } from '@blog/api-client';
 import type { LoaderFunctionArgs } from 'react-router';
 

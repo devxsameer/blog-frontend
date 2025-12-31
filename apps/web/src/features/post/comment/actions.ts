@@ -27,11 +27,11 @@ export async function createCommentAction({
 }
 
 export async function deleteCommentAction({ params }: ActionFunctionArgs) {
-  if (!params.postSlug || !params.commentId) {
+  if (!params.commentId) {
     throw new Response('Bad Request', { status: 400 });
   }
 
-  await commentsApi.delete(params.postSlug, params.commentId);
+  await commentsApi.delete(params.commentId);
 
   return null;
 }

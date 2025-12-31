@@ -22,6 +22,7 @@ export default function CommentForm({
       onSuccess?.();
     }
   }, [fetcher.state, fetcher.data]);
+
   return (
     <fetcher.Form method="post" action="comments" className="mt-4">
       <input type="hidden" name="parentId" value={parentId} />

@@ -12,17 +12,10 @@ import AuthLayout from '@/layouts/AuthLayout';
 import LoginPage from '@/features/auth/pages/Login';
 import SignupPage from '@/features/auth/pages/Signup';
 import { ErrorPage } from '@/pages/Error';
-import PostPage from '@/pages/Post';
-import { postLoader, postsLoader } from '@/features/post/post.loaders';
-import PostsPage from '@/pages/Posts';
 import AboutPage from '@/pages/About';
 import ProfilePage from '@/pages/Profile';
 import { requireAuth } from '@/features/auth/auth.loaders';
-import { commentsLoader } from '@/features/comment/comment.loaders';
-import {
-  createCommentAction,
-  deleteCommentAction,
-} from '@/features/comment/comment.actions';
+import { postRoute } from '@/features/post/route';
 
 export const router = createBrowserRouter([
   {
@@ -48,30 +41,7 @@ export const router = createBrowserRouter([
           },
           { path: 'profile', Component: ProfilePage, loader: requireAuth },
           { path: 'about', Component: AboutPage },
-          { path: 'posts', Component: PostsPage, loader: postsLoader },
-          {
-            id: 'post',
-            path: 'posts/:postSlug',
-            Component: PostPage,
-            loader: postLoader,
-            children: [
-              {
-                id: 'comments',
-                index: true,
-                loader: commentsLoader,
-                action: createCommentAction,
-                shouldRevalidate: ({ actionResult }) => {
-                  return actionResult !== null;
-                },
-              },
-              {
-                path: 'comments/:commentId/delete',
-                action: deleteCommentAction,
-                shouldRevalidate: ({ actionResult }) =>
-                  actionResult !== undefined,
-              },
-            ],
-          },
+          postRoute,
           { path: '*', element: <ErrorPage /> },
         ],
       },

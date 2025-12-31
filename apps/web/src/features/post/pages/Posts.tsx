@@ -1,5 +1,5 @@
 import PostList from '@/features/post/components/PostList';
-import type { postsLoader } from '@/features/post/post.loaders';
+import type { postsLoader } from '@/features/post/loaders';
 import { useLoaderData, Link } from 'react-router';
 
 export default function PostsPage() {

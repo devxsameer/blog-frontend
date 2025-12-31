@@ -1,5 +1,5 @@
 import { useFetcher, useRouteLoaderData } from 'react-router';
-import type { CommentNode } from '../comment.types';
+import type { CommentNode } from '../types';
 import CommentForm from './CommentForm';
 import type { RootLoaderData } from '@/app/root.loader';
 import { useState } from 'react';
@@ -32,7 +32,7 @@ export default function CommentItem({ comment }: { comment: CommentNode }) {
             >
               <button
                 type="submit"
-                className="text-red-600"
+                className="cursor-pointer text-red-600"
                 disabled={fetcher.state === 'submitting'}
               >
                 {fetcher.state === 'submitting' ? 'Deleting…' : 'Delete'}

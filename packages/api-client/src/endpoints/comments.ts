@@ -7,11 +7,10 @@ export const commentsApi = {
     return unwrap<any[]>(status, body);
   },
 
-  async delete(slug: string, commentId: string) {
-    const { status, body } = await authHttp(
-      `/api/posts/${slug}/comments/${commentId}`,
-      { method: 'DELETE' },
-    );
+  async delete(commentId: string) {
+    const { status, body } = await authHttp(`/api/comments/${commentId}`, {
+      method: 'DELETE',
+    });
     return unwrap(status, body);
   },
 

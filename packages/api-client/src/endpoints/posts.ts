@@ -19,4 +19,17 @@ export const postsApi = {
     const { status, body } = await authHttp(`/api/posts/${slug}`);
     return unwrap<Post>(status, body);
   },
+
+  async like(slug: string) {
+    const { status, body } = await authHttp(`/api/posts/${slug}/like`, {
+      method: 'POST',
+    });
+    return unwrap(status, body);
+  },
+  async unlike(slug: string) {
+    const { status, body } = await authHttp(`/api/posts/${slug}/like`, {
+      method: 'DELETE',
+    });
+    return unwrap(status, body);
+  },
 };
