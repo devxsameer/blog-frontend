@@ -12,13 +12,14 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between border-b border-neutral-200 px-4 py-2">
-        {/* Logo - Changed to Link */}
+        {/* Logo */}
         <Link to="/" className="flex flex-col leading-none">
           <span className="text-xl/tight font-bold tracking-tight">
             Blog<span className="text-neutral-400">.</span>
           </span>
           <span className="text-sm/tight text-neutral-500">
-            writing with <span className="font-medium">devXsameer</span>
+            writing with{' '}
+            <span className="text-base-content font-medium">devXsameer</span>
           </span>
         </Link>
 
@@ -26,7 +27,7 @@ export default function Header() {
         <nav className="hidden items-center gap-6 md:flex">
           <NavLink to="/">Home</NavLink>
           <NavLink to="/posts">Posts</NavLink>
-          <NavLink to="/about">About</NavLink>
+          <NavLink to="/portfolio">Portfolio</NavLink>
         </nav>
 
         {/* Auth Actions (Desktop) */}
@@ -36,7 +37,7 @@ export default function Header() {
               <NavLink to="/auth/login">Login</NavLink>
               <Link
                 to="/auth/signup"
-                className="rounded-md bg-neutral-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-neutral-800"
+                className="btn btn-sm btn-neutral px-3 py-1.5 text-sm font-medium"
               >
                 Sign up
               </Link>
@@ -132,8 +133,8 @@ export default function Header() {
             <MobileNavLink to="/posts" onClick={() => setOpen(false)}>
               Posts
             </MobileNavLink>
-            <MobileNavLink to="/about" onClick={() => setOpen(false)}>
-              About
+            <MobileNavLink to="/portfolio" onClick={() => setOpen(false)}>
+              Portfolio
             </MobileNavLink>
             <div className="my-2 border-t border-neutral-200" />
             {!user ? (

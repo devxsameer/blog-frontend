@@ -1,41 +1,58 @@
 import type { ValidationError } from '@blog/api-client';
-import { Form, useActionData } from 'react-router';
+import { Form, Link, useActionData } from 'react-router';
 
 export default function LoginPage() {
   const actionData = useActionData() as ValidationError | undefined;
   return (
-    <div>
-      <h1 className="mb-6 text-center text-2xl font-semibold">Welcome back</h1>
+    <div className="card bg-base-100 max-w-sm shadow-sm">
+      <div className="card-body">
+        <div>
+          <h1 className="text-2xl font-semibold">
+            <span className="block text-3xl">🔒</span>Welcome Back
+          </h1>
+          <p>Log in to continue interacting with the blog.</p>
+        </div>
+        <div className="mt-4">
+          {actionData?.issues && actionData.issues.length > 0 && (
+            <div className="mb-2">
+              {actionData?.issues?.map((issue) => (
+                <p key={issue.path} className="text-red-500">
+                  {issue.message}
+                </p>
+              ))}
+            </div>
+          )}
 
-      {actionData?.issues?.map((issue) => (
-        <p key={issue.path} className="text-red-500">
-          {issue.message}
+          <Form method="POST" action={'/auth/login'}>
+            <label className="label mb-0.5">Email</label>
+            <input
+              name="email"
+              type="email"
+              placeholder="Registered email..."
+              className="input mb-4 w-full"
+            />
+
+            <label className="label mb-0.5">Password</label>
+            <input
+              name="password"
+              type="password"
+              placeholder="Password..."
+              required
+              className="input mb-4 w-full"
+            />
+
+            <button type="submit" className="btn btn-neutral btn-block">
+              Log In
+            </button>
+          </Form>
+        </div>
+        <p className="mt-4 text-center text-sm">
+          First time here?{' '}
+          <Link to="/auth/signup" className="link link-hover font-semibold">
+            Create an account
+          </Link>
         </p>
-      ))}
-
-      <Form method="post" action={'/auth/login'} className="space-y-4">
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          className="w-full rounded border p-2"
-        />
-
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          required
-          className="w-full rounded border p-2"
-        />
-
-        <button
-          type="submit"
-          className="w-full rounded bg-black py-2 text-white"
-        >
-          Continue
-        </button>
-      </Form>
+      </div>
     </div>
   );
 }

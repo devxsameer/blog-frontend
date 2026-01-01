@@ -1,7 +1,7 @@
 // web/src/app/root.loader.ts
 import { redirect } from 'react-router';
 import { tokenStore } from '@blog/token-store';
-import { authStore } from '@/features/auth/auth.store';
+import { authStore } from '@/features/auth/store';
 import { authApi } from '@/lib/api';
 import type { User } from '@blog/types';
 
@@ -23,6 +23,6 @@ export async function rootLoader(): Promise<RootLoaderData> {
   }
 }
 
-export async function aboutLoader() {
+export async function portfolioLoader() {
   return redirect('https://devxsameer.me');
 }

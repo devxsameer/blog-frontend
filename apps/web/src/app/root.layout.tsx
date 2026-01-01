@@ -2,6 +2,7 @@
 import Header from '@/layouts/Header';
 import { Outlet } from 'react-router';
 import ScrollToTop from './ScrollToTop';
+import Footer from '@/layouts/Footer';
 
 export function RootLayout() {
   return (
@@ -11,6 +12,7 @@ export function RootLayout() {
       <div className="mx-auto w-full max-w-6xl p-4 py-6">
         <Outlet />
       </div>
+      <Footer />
     </div>
   );
 }
