@@ -1,4 +1,4 @@
-import { postsApi } from '@/lib/api';
+import { postsApi } from '@blog/api-client';
 import type { ActionFunctionArgs } from 'react-router';
 
 export async function likePostAction({ request, params }: ActionFunctionArgs) {

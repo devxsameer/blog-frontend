@@ -1,5 +1,10 @@
 // web/src/features/post/loaders.ts
-import { commentsApi, postsApi, tagsApi } from '@blog/api-client';
+import {
+  ApiClientError,
+  commentsApi,
+  postsApi,
+  tagsApi,
+} from '@blog/api-client';
 import type { LoaderFunctionArgs } from 'react-router';
 
 export async function postLoader({ params }: LoaderFunctionArgs) {
@@ -12,11 +17,12 @@ export async function postLoader({ params }: LoaderFunctionArgs) {
     const comments = commentsApi.listByPost(params.postSlug);
 
     return { post, comments };
-  } catch (err: any) {
-    if (err.status === 404) {
-      throw new Response('Post not found', { status: 404 });
+  } catch (err) {
+    if (err instanceof ApiClientError) {
+      if (err.status === 404) {
+        throw new Response('Post not found', { status: 404 });
+      }
     }
-
     throw new Response('Failed to load post', { status: 500 });
   }
 }
@@ -34,7 +40,10 @@ export async function postsLoader({ request }: LoaderFunctionArgs) {
     const tags = tagsApi.getPopular();
 
     return { postsData, tags };
-  } catch (err: any) {
+  } catch (err) {
+    if (err instanceof ApiClientError) {
+      throw new Response('Failed to load posts', { status: 500 });
+    }
     throw new Response('Failed to load posts', { status: 500 });
   }
 }

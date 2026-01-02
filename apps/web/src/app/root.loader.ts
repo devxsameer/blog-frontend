@@ -2,8 +2,8 @@
 import { redirect } from 'react-router';
 import { tokenStore } from '@blog/token-store';
 import { authStore } from '@/features/auth/store';
-import { authApi } from '@/lib/api';
 import type { User } from '@blog/types';
+import { authApi } from '@blog/api-client';
 
 export type RootLoaderData = { user: User | null };
 

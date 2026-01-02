@@ -6,8 +6,8 @@ import {
 
 function Footer() {
   return (
-    <footer className="border-t border-neutral-200">
-      <div className="footer sm:footer-horizontal mx-auto max-w-6xl gap-10 p-8 text-neutral-600">
+    <footer className="">
+      <div className="footer sm:footer-horizontal mx-auto max-w-6xl gap-10 border-t border-neutral-200 p-8 text-neutral-600">
         {/* Brand / Identity */}
         <aside className="space-y-3">
           {/* KEEP THIS SVG AS REQUESTED */}

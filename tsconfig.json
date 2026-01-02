@@ -1,10 +1,4 @@
 {
   "files": [],
-  "references": [
-    { "path": "./apps/web" },
-    { "path": "./apps/dashboard" },
-    { "path": "./packages/api-client" },
-    { "path": "./packages/token-store" },
-    { "path": "./packages/types" }
-  ]
+  "references": [{ "path": "./apps/web" }, { "path": "./apps/dashboard" }]
 }
