@@ -5,7 +5,9 @@ function Header() {
   const { user } = useRouteLoaderData('root') as Awaited<
     ReturnType<typeof rootLoader>
   >;
-  const fetcher = useFetcher();
+  const logoutFetcher = useFetcher();
+
+  const isLoggingOut = logoutFetcher.state !== 'idle';
 
   return (
     <div className="navbar bg-base-100 border-base-300 text-base-content border-b-2">
@@ -30,11 +32,14 @@ function Header() {
             </div>
           </button>
           <ul
-            tabIndex={-1}
+            tabIndex={0}
             className="menu dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
           >
             <li>
-              <Link to={'/dashboard/profile'} className="justify-between">
+              <Link
+                to={'/dashboard/profile'}
+                className="btn btn-sm btn-ghost btn-block justify-start"
+              >
                 Profile
               </Link>
             </li>
@@ -42,14 +47,21 @@ function Header() {
               <button
                 type="button"
                 onClick={() =>
-                  fetcher.submit(null, {
+                  logoutFetcher.submit(null, {
                     method: 'POST',
                     action: '/logout',
                   })
                 }
-                className="w-full px-4 py-2 text-left text-sm text-neutral-700 hover:bg-neutral-100"
+                className="btn btn-sm btn-ghost btn-block justify-start"
               >
-                {fetcher.state === 'submitting' ? 'Logging out...' : 'Logout'}
+                {isLoggingOut ? (
+                  <>
+                    <span className="loading loading-spinner loading-xs"></span>
+                    Logging Out...
+                  </>
+                ) : (
+                  'Logout'
+                )}
               </button>
             </li>
           </ul>

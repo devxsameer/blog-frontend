@@ -81,7 +81,7 @@ export default function PostForm({ initialValues, mode }: PostFormProps) {
 
         {/* Main form */}
         <div className="flex flex-wrap gap-6">
-          <div className="card bg-base-100 flex-3 shadow-sm">
+          <div className="card bg-base-100 min-w-lg flex-3 shadow-sm">
             <div className="card-body space-y-4">
               <label className="fieldset">
                 <span className="fieldset-label font-semibold">Title *</span>
@@ -112,7 +112,7 @@ export default function PostForm({ initialValues, mode }: PostFormProps) {
             </div>
           </div>
 
-          <div className="card bg-base-100 flex-1 shadow-sm">
+          <div className="card bg-base-100 min-w-xs flex-1 shadow-sm">
             <div className="card-body space-y-4">
               <label className="fieldset">
                 <span className="fieldset-label font-semibold">Tags</span>

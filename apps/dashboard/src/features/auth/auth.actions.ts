@@ -3,7 +3,7 @@ import { redirect } from 'react-router';
 import type { ActionFunctionArgs } from 'react-router';
 import { tokenStore } from '@blog/token-store';
 import { authStore } from './auth.store';
-import { authApi, ValidationError } from '@blog/api-client';
+import { ApiClientError, authApi, ValidationError } from '@blog/api-client';
 
 export async function loginAction({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
@@ -14,11 +14,14 @@ export async function loginAction({ request }: ActionFunctionArgs) {
     const res = await authApi.login({ email, password });
     tokenStore.set(res.accessToken);
     authStore.setUser(res.user);
+
     throw redirect('/');
   } catch (err) {
-    if (err instanceof ValidationError) {
+    if (err instanceof ValidationError || err instanceof ApiClientError) {
       return err;
     }
+
+    console.error('Unexpected login error:', err);
     throw err;
   }
 }
@@ -29,9 +32,9 @@ export async function logoutAction() {
 
   try {
     await authApi.logout();
-    throw redirect('/');
-  } catch (err: unknown) {
-    console.error(err);
-    throw redirect('/');
+  } catch (err) {
+    console.error('Logout API failed:', err);
   }
+
+  return redirect('/login');
 }

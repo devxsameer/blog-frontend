@@ -14,13 +14,17 @@ export function DashBoardLayout() {
       <div className="drawer lg:drawer-open">
         <div className="drawer-content bg-base-200 flex flex-col">
           <Header />
-          <div className="min-h-screen p-6 max-md:p-4">
-            {isPageLoading ? <SkeletonLoader /> : <Outlet />}
-          </div>
-          <div className="fab">
+          <main className="min-h-screen p-6 max-md:p-4">
+            <div
+              className={`transition-opacity duration-300 ${isPageLoading ? 'pointer-events-none opacity-50' : 'opacity-100'}`}
+            >
+              {isPageLoading ? <SkeletonLoader /> : <Outlet />}
+            </div>
+          </main>
+          <div className="fixed right-6 bottom-6 z-50 lg:hidden">
             <label
               htmlFor="my-drawer-3"
-              className="btn btn-lg btn-circle drawer-button btn-neutral text-2xl lg:hidden"
+              className="btn btn-lg btn-circle drawer-button btn-neutral text-2xl"
             >
               <RiMenu4Fill />
             </label>

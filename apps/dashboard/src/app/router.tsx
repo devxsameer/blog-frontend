@@ -26,6 +26,7 @@ export const router = createBrowserRouter([
       {
         path: 'dashboard',
         Component: DashBoardLayout,
+        ErrorBoundary: ErrorPage,
         children: [
           {
             index: true,
@@ -41,9 +42,10 @@ export const router = createBrowserRouter([
   },
   {
     path: '/login',
-    Component: LoginPage,
-    action: loginAction,
     loader: loginLoader,
+    action: loginAction,
+    Component: LoginPage,
+    ErrorBoundary: RootErrorPage,
   },
   { path: '/logout', action: logoutAction },
   { path: '*', loader: () => redirect('/') },

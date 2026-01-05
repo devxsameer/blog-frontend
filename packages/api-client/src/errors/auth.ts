@@ -1,8 +1,8 @@
 import { ApiClientError } from './base';
 
 export class AuthError extends ApiClientError {
-  constructor() {
-    super('UNAUTHORIZED', 401, 'Authentication required');
+  constructor(message: string = 'Authentication Required') {
+    super('UNAUTHORIZED', 401, message);
     this.name = 'AuthError';
   }
 }

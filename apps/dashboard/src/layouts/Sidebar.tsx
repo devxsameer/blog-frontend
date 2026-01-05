@@ -1,10 +1,22 @@
+import { useEffect } from 'react';
 import { AiFillHome } from 'react-icons/ai';
 import { FaUser } from 'react-icons/fa';
 import { IoMdCreate } from 'react-icons/io';
 import { MdSpaceDashboard } from 'react-icons/md';
-import { NavLink } from 'react-router';
+import { NavLink, useLocation } from 'react-router';
 
 function Sidebar() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const drawerCheckbox = document.getElementById(
+      'my-drawer-3',
+    ) as HTMLInputElement;
+    if (drawerCheckbox) {
+      drawerCheckbox.checked = false;
+    }
+  }, [location]);
+
   const navLinks = [
     { to: '/dashboard', label: 'Home', icon: <AiFillHome />, end: true },
     {
@@ -23,7 +35,7 @@ function Sidebar() {
   return (
     <>
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-side border-base-300 border-r-2">
+      <div className="drawer-side border-base-300 z-[100] border-r-2">
         <label
           htmlFor="my-drawer-3"
           aria-label="close sidebar"

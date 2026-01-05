@@ -14,19 +14,23 @@ export function unwrap<T>(status: number, body: any): T {
   const { code, message, issues } = body.error ?? {};
 
   if (status === 401) {
-    throw new AuthError();
+    throw new AuthError(message);
   }
 
   if (code === 'VALIDATION_ERROR') {
     throw new ValidationError(message, issues ?? []);
   }
 
-  throw new ApiClientError(code ?? 'UNKNOWN_ERROR', status, message);
+  throw new ApiClientError(
+    code ?? 'UNKNOWN_ERROR',
+    status,
+    message ?? 'An unexpected error occurred',
+  );
 }
 
 export function unwrapWithMeta<T>(status: number, body: any): T {
   if (!body) {
-    throw new ApiClientError('INVALID_RESPONSE', status, 'Empty body');
+    throw new ApiClientError('INVALID_RESPONSE', status, 'Empty response body');
   }
 
   if (body.success === true) {
@@ -38,10 +42,15 @@ export function unwrapWithMeta<T>(status: number, body: any): T {
 
   const { code, message, issues } = body.error ?? {};
 
-  if (status === 401) throw new AuthError();
+  if (status === 401) throw new AuthError(message);
+
   if (code === 'VALIDATION_ERROR') {
     throw new ValidationError(message, issues ?? []);
   }
 
-  throw new ApiClientError(code ?? 'UNKNOWN_ERROR', status, message);
+  throw new ApiClientError(
+    code ?? 'UNKNOWN_ERROR',
+    status,
+    message ?? 'An unexpected error occurred',
+  );
 }
