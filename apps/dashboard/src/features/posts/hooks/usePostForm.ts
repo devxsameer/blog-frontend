@@ -1,36 +1,39 @@
-import { useEffect, useState } from 'react';
-import { useFetcher } from 'react-router';
-import type { createPostAction } from '../post.actions';
+// dashboard/src/features/posts/hooks/usePostForm.ts
+import { useMutation } from '@tanstack/react-query';
+import { postsApi, ValidationError } from '@blog/api-client';
+import type { PostInput } from '@blog/types';
+import { useState } from 'react';
 
-type Mode = 'create' | 'edit';
-
-export function usePostForm(mode: Mode, slug?: string) {
-  const fetcher = useFetcher<Awaited<ReturnType<typeof createPostAction>>>();
+export function usePostForm(mode: 'create' | 'edit', slug?: string) {
+  const [error, setError] = useState<ValidationError | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const isSubmitting = fetcher.state === 'submitting';
+  const mutation = useMutation({
+    mutationFn: async (input: PostInput) => {
+      if (mode === 'create') return postsApi.create(input);
+      if (!slug) throw new Error('Missing slug');
+      return postsApi.update(slug, input);
+    },
 
-  useEffect(() => {
-    if (fetcher.state === 'idle' && fetcher.data?.success) {
+    onSuccess: () => {
       setShowSuccess(true);
-    }
-  }, [fetcher.state, fetcher.data]);
+    },
 
-  function submit(data: FormData | Record<string, any>) {
-    fetcher.submit(data, {
-      method: 'POST',
-      action:
-        mode === 'create'
-          ? '/dashboard/posts'
-          : `/dashboard/posts/${slug}/edit`,
-    });
-  }
+    onError: (err) => {
+      if (err instanceof ValidationError) {
+        setError(err);
+      } else {
+        throw err;
+      }
+    },
+  });
 
   return {
-    submit,
-    fetcher,
-    isSubmitting,
+    submit: mutation.mutate,
+    isSubmitting: mutation.isPending,
+    error,
     showSuccess,
     closeSuccess: () => setShowSuccess(false),
+    result: mutation.data,
   };
 }

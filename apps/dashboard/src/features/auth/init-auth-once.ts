@@ -1,4 +1,4 @@
-// auth/init-auth-once.ts
+// dashboard/src/features/auth/init-auth-once.ts
 import { authApi } from '@blog/api-client';
 
 let initPromise: Promise<boolean> | null = null;

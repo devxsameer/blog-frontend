@@ -1,7 +1,7 @@
 import type { Post } from '@blog/types';
 import StatusBadge from './StatusBadge';
-import { Link } from 'react-router';
 import DeletePostButton from './DeletePostBtn';
+import { Link } from '@tanstack/react-router';
 
 function PostRow({ post }: { post: Post }) {
   return (

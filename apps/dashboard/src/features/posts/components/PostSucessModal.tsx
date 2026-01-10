@@ -1,5 +1,5 @@
+import { Link } from '@tanstack/react-router';
 import { useEffect, useRef } from 'react';
-import { Link } from 'react-router';
 
 type Props = {
   open: boolean;

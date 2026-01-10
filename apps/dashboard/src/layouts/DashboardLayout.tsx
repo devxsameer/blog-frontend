@@ -1,23 +1,23 @@
-import { Outlet, useNavigation, useRouteLoaderData } from 'react-router';
-import Sidebar from './Sidebar';
-import Header from './Header';
+// dashboard/src/layouts/DashboardLayout.tsx
+import Sidebar from './components/Sidebar';
+import Header from './components/Header';
 import { RiMenu4Fill } from 'react-icons/ri';
 import SkeletonLoader from '@/shared/components/SkeletonLoader';
-import { rootLoader } from '@/app/root.loader';
+import { dashboardRoute } from '../routes/dashboard/dashboard.route';
+import { Outlet, useRouterState } from '@tanstack/react-router';
 
 export function DashBoardLayout() {
-  const { user } = useRouteLoaderData('root') as Awaited<
-    ReturnType<typeof rootLoader>
-  >;
-  const navigation = useNavigation();
+  const { user } = dashboardRoute.useRouteContext();
 
-  const isPageLoading = navigation.state === 'loading';
+  const isPageLoading = useRouterState({
+    select: (s) => s.isTransitioning,
+  });
 
   return (
     <div className="font-outfit">
       <div className="drawer lg:drawer-open">
         <div className="drawer-content bg-base-200 flex flex-col">
-          <Header />
+          <Header user={user} />
           <main className="min-h-screen p-6 max-md:p-4">
             <div
               className={`transition-opacity duration-300 ${isPageLoading ? 'pointer-events-none opacity-50' : 'opacity-100'}`}

@@ -1,18 +1,23 @@
-import { useFetcher } from 'react-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import ConfirmDialog from '@/shared/components/ConfirmDialog';
+import { postsApi } from '@blog/api-client';
 
-export default function DeletePostButton({ slug }: { slug: string }) {
-  const fetcher = useFetcher();
+type Props = {
+  slug: string;
+};
+
+export default function DeletePostButton({ slug }: Props) {
   const [open, setOpen] = useState(false);
 
-  const isDeleting = fetcher.state === 'submitting';
-
-  useEffect(() => {
-    if (fetcher.state === 'idle' && open) {
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      await postsApi.delete(slug);
+    },
+    onSuccess: () => {
       setOpen(false);
-    }
-  }, [fetcher.state]);
+    },
+  });
 
   return (
     <>
@@ -28,14 +33,9 @@ export default function DeletePostButton({ slug }: { slug: string }) {
         title="Delete post?"
         description="This action cannot be undone."
         confirmText="Delete"
-        loading={isDeleting}
+        loading={deleteMutation.isPending}
         onClose={() => setOpen(false)}
-        onConfirm={() =>
-          fetcher.submit(null, {
-            method: 'POST',
-            action: `/dashboard/posts/${slug}/delete`,
-          })
-        }
+        onConfirm={() => deleteMutation.mutate()}
       />
     </>
   );

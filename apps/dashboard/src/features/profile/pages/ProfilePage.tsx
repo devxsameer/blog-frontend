@@ -1,10 +1,8 @@
-import { useRouteLoaderData } from 'react-router';
-import type { rootLoader } from '@/app/root.loader';
+// dashboard/src/features/profile/pages/ProfilePage.tsx
+import { dashboardRoute } from '@/routes/dashboard/dashboard.route';
 
 export default function ProfilePage() {
-  const { user } = useRouteLoaderData('root') as Awaited<
-    ReturnType<typeof rootLoader>
-  >;
+  const { user } = dashboardRoute.useRouteContext();
 
   return (
     <div className="max-w-3xl space-y-8">
@@ -72,6 +70,7 @@ export default function ProfilePage() {
               </div>
             )}
           </div>
+
           <div className="card-actions justify-end">
             <button className="btn btn-outline btn-sm" disabled>
               Edit profile (coming soon)

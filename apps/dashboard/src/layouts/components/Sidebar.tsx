@@ -1,35 +1,34 @@
+// dashboard/src/layouts/components/Sidebar.tsx
+import { Link, useMatchRoute } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { AiFillHome } from 'react-icons/ai';
 import { FaUser } from 'react-icons/fa';
 import { IoMdCreate } from 'react-icons/io';
 import { MdSpaceDashboard } from 'react-icons/md';
-import { NavLink, useLocation } from 'react-router';
 
 function Sidebar() {
-  const location = useLocation();
+  const matchRoute = useMatchRoute();
 
   useEffect(() => {
     const drawerCheckbox = document.getElementById(
       'my-drawer-3',
-    ) as HTMLInputElement;
+    ) as HTMLInputElement | null;
     if (drawerCheckbox) {
       drawerCheckbox.checked = false;
     }
-  }, [location]);
+  }, [matchRoute]);
 
   const navLinks = [
-    { to: '/dashboard', label: 'Home', icon: <AiFillHome />, end: true },
+    { to: '/dashboard', label: 'Home', icon: <AiFillHome />, exact: true },
     {
       to: '/dashboard/posts',
       label: 'Posts',
       icon: <MdSpaceDashboard />,
-      end: false,
     },
     {
       to: '/dashboard/profile',
       label: 'Profile',
       icon: <FaUser />,
-      end: false,
     },
   ];
   return (
@@ -48,24 +47,23 @@ function Sidebar() {
             </a>
           </div>
           <div className="p-2">
-            <NavLink
+            <Link
               to={'/dashboard/posts/create'}
-              className={({ isActive }) =>
-                `btn btn-block btn-neutral ${isActive ? 'btn-disabled' : ''}`
-              }
+              className="btn btn-block btn-neutral"
+              activeProps={{ className: 'bg-disabled' }}
             >
               Create post <IoMdCreate />
-            </NavLink>
+            </Link>
           </div>
           <div className="menu flex w-full gap-2 p-2">
             {navLinks.map((link) => (
-              <NavLink
+              <Link
                 key={link.to}
                 to={link.to}
-                end={link.end}
-                className={({ isActive }) =>
-                  `btn btn-block ${isActive ? 'bg-base-200' : 'btn-ghost'} justify-start`
-                }
+                activeOptions={{ exact: link.exact }}
+                className="btn btn-block justify-start"
+                activeProps={{ className: 'bg-base-200' }}
+                inactiveProps={{ className: 'btn-ghost' }}
               >
                 {({ isActive }) => (
                   <>
@@ -75,7 +73,7 @@ function Sidebar() {
                     {link.label}
                   </>
                 )}
-              </NavLink>
+              </Link>
             ))}
           </div>
         </div>

@@ -1,13 +1,23 @@
-import type { rootLoader } from '@/app/root.loader';
-import { Link, useFetcher, useRouteLoaderData } from 'react-router';
+// dashboard/src/layouts/components/Header.tsx
+import { logout } from '@/features/auth/auth.api';
+import { useMutation } from '@tanstack/react-query';
+import { Link, useRouter } from '@tanstack/react-router';
 
-function Header() {
-  const { user } = useRouteLoaderData('root') as Awaited<
-    ReturnType<typeof rootLoader>
-  >;
-  const logoutFetcher = useFetcher();
+type Props = {
+  user: {
+    username: string;
+    role: string;
+  };
+};
 
-  const isLoggingOut = logoutFetcher.state !== 'idle';
+function Header({ user }: Props) {
+  const router = useRouter();
+  const logoutMutation = useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      router.navigate({ to: '/login' });
+    },
+  });
 
   return (
     <div className="navbar bg-base-100 border-base-300 text-base-content border-b-2">
@@ -46,15 +56,11 @@ function Header() {
             <li>
               <button
                 type="button"
-                onClick={() =>
-                  logoutFetcher.submit(null, {
-                    method: 'POST',
-                    action: '/logout',
-                  })
-                }
+                onClick={() => logoutMutation.mutate()}
+                disabled={logoutMutation.isPending}
                 className="btn btn-sm btn-ghost btn-block justify-start"
               >
-                {isLoggingOut ? (
+                {logoutMutation.isPending ? (
                   <>
                     <span className="loading loading-spinner loading-xs"></span>
                     Logging Out...

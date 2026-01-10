@@ -1,4 +1,4 @@
-// src/components/StatCard.tsx
+// dashboard/src/features/dashboard/components/StatCard.tsx
 import type { ReactNode } from 'react';
 
 type StatCardProps = {

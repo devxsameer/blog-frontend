@@ -23,8 +23,20 @@ export default function PostForm({ initialValues, mode }: PostFormProps) {
     initialValues?.status ?? 'draft',
   );
 
-  const { submit, fetcher, isSubmitting, showSuccess, closeSuccess } =
+  const { submit, isSubmitting, error, showSuccess, closeSuccess, result } =
     usePostForm(mode, initialValues?.slug);
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    submit({
+      title,
+      contentMarkdown,
+      excerpt: excerpt || null,
+      status,
+      tags,
+    });
+  }
 
   const isArchived = status === 'archived';
   const canEditContent = !isArchived;
@@ -33,29 +45,12 @@ export default function PostForm({ initialValues, mode }: PostFormProps) {
     setTitle(value);
     if (mode === 'create') setSlug(generateSlug(value));
   }
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('contentMarkdown', contentMarkdown);
-    formData.append('status', status);
-    if (excerpt) formData.append('excerpt', excerpt);
-
-    tags.forEach((tag) => {
-      formData.append('tags', tag.trim().toLowerCase());
-    });
-
-    submit(formData);
-  }
-
   return (
     <>
       <PostSuccessModal
         open={showSuccess}
         mode={mode}
-        slug={fetcher.data?.post?.slug}
+        slug={result?.slug}
         onClose={closeSuccess}
       />
 
@@ -69,9 +64,9 @@ export default function PostForm({ initialValues, mode }: PostFormProps) {
         )}
 
         {/* Validation errors */}
-        {fetcher.data?.error?.issues && (
+        {error?.issues && (
           <div className="space-y-1">
-            {fetcher.data.error.issues.map((issue: ValidationIssue) => (
+            {error.issues.map((issue: ValidationIssue) => (
               <p key={issue.path} className="text-sm text-red-500">
                 {issue.path}: {issue.message}
               </p>
