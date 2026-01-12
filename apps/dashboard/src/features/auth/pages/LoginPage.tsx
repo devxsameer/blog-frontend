@@ -1,29 +1,26 @@
 // dashboard/src/features/auth/pages/LoginPage.tsx
 import { useState } from 'react';
-import { useRouter } from '@tanstack/react-router';
 import { ApiClientError, ValidationError } from '@blog/api-client';
 import { login } from '../auth.api';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 function LoginPage() {
-  const router = useRouter();
+  const queryClient = useQueryClient();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [issues, setIssues] = useState<ValidationError['issues'] | null>(null);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  const loginMutation = useMutation({
+    mutationFn: ({ email, password }: { email: string; password: string }) =>
+      login(email, password),
 
-    setSubmitting(true);
-    setError(null);
-    setIssues(null);
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['me'] });
+    },
 
-    try {
-      await login(email, password);
-      router.navigate({ to: '/dashboard' });
-    } catch (err) {
+    onError: (err) => {
       if (err instanceof ValidationError) {
         setIssues(err.issues);
       } else if (err instanceof ApiClientError) {
@@ -32,9 +29,14 @@ function LoginPage() {
         setError('Unexpected error occurred');
         console.error(err);
       }
-    } finally {
-      setSubmitting(false);
-    }
+    },
+  });
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setIssues(null);
+    loginMutation.mutate({ email, password });
   }
 
   return (
@@ -84,7 +86,7 @@ function LoginPage() {
               type="email"
               autoComplete="username"
               required
-              disabled={submitting}
+              disabled={loginMutation.isPending}
               className="input mb-4 w-full"
             />
 
@@ -95,16 +97,16 @@ function LoginPage() {
               type="password"
               autoComplete="current-password"
               required
-              disabled={submitting}
+              disabled={loginMutation.isPending}
               className="input mb-4 w-full"
             />
 
             <button
               type="submit"
-              disabled={submitting}
+              disabled={loginMutation.isPending}
               className="btn btn-neutral btn-block shadow-md"
             >
-              {submitting ? 'Authenticating…' : 'Sign In'}
+              {loginMutation.isPending ? 'Authenticating…' : 'Sign In'}
             </button>
           </form>
         </div>

@@ -3,14 +3,16 @@ import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import { RiMenu4Fill } from 'react-icons/ri';
 import SkeletonLoader from '@/shared/components/SkeletonLoader';
-import { dashboardRoute } from '../routes/dashboard/dashboard.route';
 import { Outlet, useRouterState } from '@tanstack/react-router';
+import { Route } from '@/routes/dashboard/route';
 
 export function DashBoardLayout() {
-  const { user } = dashboardRoute.useRouteContext();
+  const { user } = Route.useRouteContext();
 
   const isPageLoading = useRouterState({
-    select: (s) => s.isTransitioning,
+    select: (s) =>
+      s.status === 'pending' &&
+      s.matches.some((m) => m.routeId === '/dashboard'),
   });
 
   return (
@@ -26,7 +28,7 @@ export function DashBoardLayout() {
                 <SkeletonLoader />
               ) : (
                 <>
-                  {user.isReadOnly && (
+                  {user?.isReadOnly && (
                     <div className="alert alert-warning mb-4 text-sm">
                       You're logged in as a demo admin. Editing and writing are
                       disabled.

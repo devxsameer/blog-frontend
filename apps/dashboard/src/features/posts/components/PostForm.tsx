@@ -1,13 +1,14 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import type { PostStatus } from '@blog/types';
 import type { ValidationIssue } from '@blog/api-client';
 
-import MarkdownEditor from './MarkdownEditor';
 import TagInput from './TagInput';
 import { generateSlug } from '@/shared/utils/slug';
-import type { PostFormProps } from '../post.types';
+import type { PostFormProps } from '../posts.types';
 import { usePostForm } from '../hooks/usePostForm';
 import PostSuccessModal from './PostSucessModal';
+
+const MarkdownEditor = lazy(() => import('./MarkdownEditor'));
 
 export default function PostForm({ initialValues, mode }: PostFormProps) {
   const [title, setTitle] = useState(initialValues?.title ?? '');
@@ -144,11 +145,13 @@ export default function PostForm({ initialValues, mode }: PostFormProps) {
               <span className="fieldset-label font-semibold">
                 Content Markdown
               </span>
-              <MarkdownEditor
-                value={contentMarkdown}
-                onChange={setContentMarkdown}
-                disabled={!canEditContent}
-              />
+              <Suspense fallback={<div className="skeleton h-40" />}>
+                <MarkdownEditor
+                  value={contentMarkdown}
+                  onChange={setContentMarkdown}
+                  disabled={!canEditContent}
+                />
+              </Suspense>
             </label>
           </div>
         </div>

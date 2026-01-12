@@ -24,11 +24,13 @@ function Sidebar() {
       to: '/dashboard/posts',
       label: 'Posts',
       icon: <MdSpaceDashboard />,
+      exact: true,
     },
     {
       to: '/dashboard/profile',
       label: 'Profile',
       icon: <FaUser />,
+      exact: true,
     },
   ];
   return (
@@ -50,7 +52,7 @@ function Sidebar() {
             <Link
               to={'/dashboard/posts/create'}
               className="btn btn-block btn-neutral"
-              activeProps={{ className: 'bg-disabled' }}
+              activeProps={{ className: 'btn-disabled' }}
             >
               Create post <IoMdCreate />
             </Link>

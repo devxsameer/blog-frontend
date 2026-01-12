@@ -1,8 +1,8 @@
 // dashboard/src/features/profile/pages/ProfilePage.tsx
-import { dashboardRoute } from '@/routes/dashboard/dashboard.route';
+import { Route } from '@/routes/dashboard/profile';
 
 export default function ProfilePage() {
-  const { user } = dashboardRoute.useRouteContext();
+  const { user } = Route.useRouteContext();
 
   return (
     <div className="max-w-3xl space-y-8">
@@ -19,24 +19,24 @@ export default function ProfilePage() {
           <div className="flex items-center gap-6">
             <div className="avatar avatar-placeholder">
               <div className="bg-neutral text-neutral-content w-16 rounded-full text-xl font-semibold">
-                {user.username.charAt(0).toUpperCase()}
+                {user?.username.charAt(0).toUpperCase()}
               </div>
             </div>
 
             <div>
-              <h2 className="text-xl font-semibold">{user.username}</h2>
-              <p className="text-base-content/70">{user.email}</p>
+              <h2 className="text-xl font-semibold">{user?.username}</h2>
+              <p className="text-base-content/70">{user?.email}</p>
 
               <span
                 className={`badge mt-2 capitalize ${
-                  user.role === 'admin'
+                  user?.role === 'admin'
                     ? 'badge-error'
-                    : user.role === 'author'
+                    : user?.role === 'author'
                       ? 'badge-primary'
                       : 'badge-ghost'
                 }`}
               >
-                {user.role}
+                {user?.role}
               </span>
             </div>
           </div>
@@ -47,7 +47,7 @@ export default function ProfilePage() {
           <div>
             <h3 className="mb-1 font-semibold">Bio</h3>
 
-            {user.bio ? (
+            {user?.bio ? (
               <p className="text-base-content/80 leading-relaxed">{user.bio}</p>
             ) : (
               <p className="text-base-content/50 italic">No bio provided</p>
@@ -60,10 +60,10 @@ export default function ProfilePage() {
           <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
             <div>
               <span className="text-base-content/60 block">User ID</span>
-              <span className="font-mono text-xs">{user.id}</span>
+              <span className="font-mono text-xs">{user?.id}</span>
             </div>
 
-            {user.createdAt && (
+            {user?.createdAt && (
               <div>
                 <span className="text-base-content/60 block">Joined</span>
                 <span>{new Date(user.createdAt).toLocaleDateString()}</span>

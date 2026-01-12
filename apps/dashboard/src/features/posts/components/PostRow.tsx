@@ -17,7 +17,8 @@ function PostRow({ post }: { post: Post }) {
       </td>
       <td className="text-right">
         <Link
-          to={`/dashboard/posts/${post.slug}/edit`}
+          to={'/dashboard/posts/$postSlug/edit'}
+          params={{ postSlug: post.slug }}
           className="btn btn-sm btn-ghost"
         >
           Edit

@@ -1,21 +1,19 @@
 // dashboard/src/layouts/components/Header.tsx
 import { logout } from '@/features/auth/auth.api';
-import { useMutation } from '@tanstack/react-query';
-import { Link, useRouter } from '@tanstack/react-router';
+import type { User } from '@blog/types';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Link } from '@tanstack/react-router';
 
 type Props = {
-  user: {
-    username: string;
-    role: string;
-  };
+  user: User | null;
 };
 
 function Header({ user }: Props) {
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const logoutMutation = useMutation({
     mutationFn: logout,
-    onSuccess: () => {
-      router.navigate({ to: '/login' });
+    onSuccess: async () => {
+      await queryClient.setQueryData(['me'], null);
     },
   });
 

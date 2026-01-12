@@ -1,9 +1,9 @@
 // dashboard/src/features/posts/pages/EditPost.tsx
-import { postEditRoute } from '@/routes/dashboard/posts/post-edit.route';
+import { Route } from '@/routes/dashboard/posts/$postSlug.edit';
 import PostForm from '../components/PostForm';
 
 export default function EditPostPage() {
-  const post = postEditRoute.useLoaderData();
+  const post = Route.useLoaderData();
 
   return (
     <div className="space-y-6">

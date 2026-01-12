@@ -1,12 +1,10 @@
 // dashboard/src/features/posts/pages/Posts.tsx
 import { Link, useRouter } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
-import {
-  postsIndexRoute,
-  type PostsSearch,
-} from '@/routes/dashboard/posts/posts-index.route';
-import { dashboardRoute } from '@/routes/dashboard/dashboard.route';
 import PostsTable from '../components/PostsTable';
+import { postsApi } from '@blog/api-client';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import type { PostsSearch } from '../posts.types';
+import { Route } from '@/routes/dashboard/posts';
 
 type PostsSearchKey = keyof PostsSearch;
 
@@ -30,42 +28,32 @@ function asStatus(value: string): PostsSearch['status'] {
 export default function PostsPage() {
   const router = useRouter();
 
-  const { user } = dashboardRoute.useRouteContext();
-  const search = postsIndexRoute.useSearch();
-  const data = postsIndexRoute.useLoaderData();
+  const { user } = Route.useRouteContext();
+  const search = Route.useSearch();
 
-  const [posts, setPosts] = useState(data.data);
-  const [nextCursor, setNextCursor] = useState(data.meta?.nextCursor);
-
-  // Reset when filters change
-  useEffect(() => {
-    setPosts(data.data);
-    setNextCursor(data.meta?.nextCursor);
-  }, [data]);
-
-  const loadMore = async () => {
-    if (!nextCursor) return;
-
-    await router.navigate({
-      to: postsIndexRoute.to,
-      search: (prev: PostsSearch) => ({
-        ...prev,
-        cursor: nextCursor,
-      }),
-      replace: false,
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ['dashboard-posts', search],
+      queryFn: ({ pageParam }) =>
+        postsApi.listDashboard({
+          ...search,
+          cursor: pageParam,
+        }),
+      initialPageParam: undefined as string | undefined,
+      getNextPageParam: (lastPage) => lastPage.meta?.nextCursor,
     });
-  };
+
+  const posts = data?.pages.flatMap((page) => page.data) ?? [];
 
   function updateQuery<K extends PostsSearchKey>(
     key: K,
     value?: PostsSearch[K],
   ) {
     router.navigate({
-      to: postsIndexRoute.to,
+      to: '/dashboard/posts',
       search: (prev: PostsSearch) => {
-        const next: PostsSearch = {
+        const next = {
           ...prev,
-          cursor: undefined, // reset pagination
         };
 
         if (value !== undefined) {
@@ -86,13 +74,13 @@ export default function PostsPage() {
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-bold tracking-tight">Posts</h1>
           <p className="text-base-content/70">
-            {user.role === 'admin'
+            {user?.role === 'admin'
               ? 'You are admin and can edit/delete any post'
               : 'You are author and can edit/delete your posts'}
           </p>
         </div>
 
-        <Link to="/dashboard/posts/create" className="btn btn-neutral">
+        <Link to={'/dashboard/posts/create'} className="btn btn-neutral">
           Create Post
         </Link>
       </header>
@@ -138,10 +126,13 @@ export default function PostsPage() {
         <div className="card-body overflow-x-auto">
           <PostsTable posts={posts} />
 
-          {nextCursor && (
+          {hasNextPage && (
             <div className="flex justify-center">
-              <button className="btn btn-outline" onClick={loadMore}>
-                Load more
+              <button
+                className="btn btn-outline"
+                onClick={() => fetchNextPage()}
+              >
+                {isFetchingNextPage ? 'Loading…' : 'Load more'}
               </button>
             </div>
           )}
