@@ -7,7 +7,7 @@ import PostMeta from './PostMeta';
 import type { PostContent } from '@blog/types';
 import { useEffect } from 'react';
 import { createHeadingRenderer } from './MarkdownHeading';
-import { useTableOfContents } from '../useTableOfContents';
+import { useTableOfContents } from '../hooks/useTableOfContents';
 import TableOfContents from './TableOfContents';
 
 export default function PostContent({ post }: { post: PostContent }) {

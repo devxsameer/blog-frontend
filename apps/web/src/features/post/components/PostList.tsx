@@ -1,6 +1,7 @@
+import type { Post } from '@blog/types';
 import PostCard from './PostCard';
 
-export default function PostList({ posts }: { posts: any[] }) {
+export default function PostList({ posts }: { posts: Post[] }) {
   return (
     <div className="mt-8 space-y-8">
       {posts.map((post) => (

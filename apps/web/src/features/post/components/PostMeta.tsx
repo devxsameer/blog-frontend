@@ -1,37 +1,21 @@
 import type { PostContent } from '@blog/types';
 import { HeartIcon } from '@heroicons/react/24/solid';
-import { useEffect, useState } from 'react';
-import { useFetcher, useRouteLoaderData } from 'react-router';
 import { format } from 'date-fns';
-import type { RootLoaderData } from '@/app/root.loader';
+import { useRouteContext } from '@tanstack/react-router';
+import { useToggleLike } from '../mutations/like-post.mutation';
 
 export default function PostMeta({ post }: { post: PostContent }) {
-  const { user } = useRouteLoaderData('root') as RootLoaderData;
-  const [likeCount, setLikeCount] = useState(post.likeCount);
-  const [likedByMe, setLikedByMe] = useState(post.likedByMe);
+  const { user } = useRouteContext({ from: '__root__' });
+  const toggleLikeMutation = useToggleLike(post.slug);
 
-  const likeFetcher = useFetcher();
-  const isPending = likeFetcher.state !== 'idle';
+  const isPending = toggleLikeMutation.isPending;
+  const likedByMe = post.likedByMe;
+  const likeCount = post.likeCount;
 
   const toggleLike = () => {
-    if (isPending) return;
-
-    const nextLiked = !likedByMe;
-
-    setLikedByMe(nextLiked);
-    setLikeCount((c) => c + (nextLiked ? 1 : -1));
-
-    likeFetcher.submit(null, {
-      method: nextLiked ? 'POST' : 'DELETE',
-      action: 'like',
-    });
+    if (!user || isPending) return;
+    toggleLikeMutation.mutate(!likedByMe);
   };
-
-  useEffect(() => {
-    setLikedByMe(post.likedByMe);
-    setLikeCount(post.likeCount);
-  }, [post.likedByMe, post.likeCount]);
-
   return (
     <div className="my-2 space-y-4 text-sm text-neutral-600">
       {/* Tags */}

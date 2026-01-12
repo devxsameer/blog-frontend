@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router';
+import { Link, useRouterState } from '@tanstack/react-router';
 import { House, ChevronRight } from 'lucide-react';
 
 const LABELS: Record<string, string> = {
@@ -12,7 +12,10 @@ export default function Breadcrumbs({
 }: {
   dynamicLabel?: string;
 }) {
-  const { pathname } = useLocation();
+  const pathname = useRouterState({
+    select: (s) => s.location.pathname,
+  });
+
   const segments = pathname.split('/').filter(Boolean);
 
   // Hide on home
@@ -23,6 +26,7 @@ export default function Breadcrumbs({
   return (
     <nav className="pb-6 text-sm">
       <ol className="flex flex-wrap items-center gap-1 text-neutral-700">
+        {/* Home */}
         <li>
           <Link to="/" className="flex items-center gap-1">
             <House className="h-4 w-4" />
