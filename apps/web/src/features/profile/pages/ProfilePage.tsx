@@ -1,7 +1,11 @@
 import { useRouteContext } from '@tanstack/react-router';
+import { useUpdateProfile } from '../mutations/update-profile.mutation';
+import { useState } from 'react';
 
 export default function ProfilePage() {
   const { user } = useRouteContext({ from: '__root__' });
+  const [bio, setBio] = useState(user?.bio ?? '');
+  const updateProfile = useUpdateProfile();
 
   if (!user) {
     return (
@@ -58,26 +62,49 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+      {/* Meta */}
+      <div className="text-sm text-neutral-500">
+        Member since{' '}
+        {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '—'}
+      </div>
 
       {/* Bio */}
       <div className="card bg-base-100 shadow-sm">
         <div className="card-body">
           <h3 className="font-semibold">Bio</h3>
 
-          {user.bio ? (
-            <p className="leading-relaxed text-neutral-700">{user.bio}</p>
-          ) : (
-            <p className="text-neutral-500 italic">
-              You haven't added a bio yet.
-            </p>
-          )}
-        </div>
-      </div>
+          <form
+            className="space-y-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              updateProfile.mutate({ bio: bio.trim() || null });
+            }}
+          >
+            <textarea
+              className="textarea textarea-bordered w-full"
+              rows={4}
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="Write a short bio about yourself…"
+              disabled={updateProfile.isPending}
+            />
+            {updateProfile.isError && (
+              <p className="text-sm text-red-500">
+                Failed to update profile. Please try again.
+              </p>
+            )}
 
-      {/* Meta */}
-      <div className="text-sm text-neutral-500">
-        Member since{' '}
-        {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '—'}
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                disabled={updateProfile.isPending}
+                className="btn btn-neutral btn-sm"
+              >
+                {updateProfile.isPending ? 'Saving…' : 'Save changes'}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
