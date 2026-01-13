@@ -1,10 +1,12 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { usersApi } from '@blog/api-client';
 import UsersTable from '../components/UsersTable';
-import { useSearch } from '@tanstack/react-router';
+import { Route } from '@/routes/dashboard/users';
+import { useRouter } from '@tanstack/react-router';
 
 export default function UsersPage() {
-  const search = useSearch({ from: '/dashboard/users/' });
+  const search = Route.useSearch();
+  const router = useRouter();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
@@ -21,6 +23,18 @@ export default function UsersPage() {
 
   const users = data?.pages.flatMap((p) => p.data) ?? [];
 
+  function updateSearch(key: 'role' | 'isActive', value?: any) {
+    router.navigate({
+      to: '/dashboard/users',
+      search: (prev) => {
+        const next = { ...prev };
+        if (value === undefined) delete next[key];
+        else next[key] = value;
+        return next;
+      },
+    });
+  }
+
   return (
     <div className="space-y-6">
       <header>
@@ -30,6 +44,23 @@ export default function UsersPage() {
         </p>
       </header>
 
+      {/* Filters */}
+      <div className="card bg-base-100 shadow-sm">
+        <div className="card-body flex-row gap-4">
+          <select
+            className="select select-bordered"
+            value={search.role ?? ''}
+            onChange={(e) => updateSearch('role', e.target.value || undefined)}
+          >
+            <option value="">All roles</option>
+            <option value="admin">Admin</option>
+            <option value="author">Author</option>
+            <option value="user">User</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Table */}
       <div className="card bg-base-100 shadow-sm">
         <div className="card-body overflow-x-auto">
           <UsersTable users={users} />

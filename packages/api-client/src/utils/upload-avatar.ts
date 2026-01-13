@@ -10,6 +10,7 @@ export async function uploadAvatarToCloudinary(
   form.append('api_key', sig.apiKey);
   form.append('timestamp', String(sig.timestamp));
   form.append('signature', sig.signature);
+  form.append('folder', 'avatars');
   form.append('public_id', sig.publicId);
 
   const res = await fetch(

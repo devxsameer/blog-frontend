@@ -1,14 +1,18 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { avatarApi } from '@blog/api-client';
 import { uploadAvatarToCloudinary } from '@blog/api-client';
 
 export default function AvatarUploader() {
+  const queryClient = useQueryClient();
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
       const sig = await avatarApi.getUploadSignature();
       const url = await uploadAvatarToCloudinary(file, sig);
       await avatarApi.updateAvatar(url);
       return url;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['me'] });
     },
   });
 

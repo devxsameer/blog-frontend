@@ -47,7 +47,7 @@ function Sidebar() {
   return (
     <>
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-side border-base-300 z-[100] border-r-2">
+      <div className="drawer-side border-base-300 z-100 border-r-2">
         <label
           htmlFor="my-drawer-3"
           aria-label="close sidebar"

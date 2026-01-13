@@ -29,11 +29,9 @@ function Header({ user }: Props) {
           >
             {user?.avatarUrl ? (
               <div className="avatar">
-                <img
-                  src={user.avatarUrl}
-                  alt={user.username}
-                  className="w-8 rounded-full"
-                />
+                <div className="ring-neutral ring-offset-base-100 h-8 w-8 rounded-full ring-2 ring-offset-2">
+                  <img src={user.avatarUrl} alt={user.username} />
+                </div>
               </div>
             ) : (
               <div className="avatar avatar-placeholder">
