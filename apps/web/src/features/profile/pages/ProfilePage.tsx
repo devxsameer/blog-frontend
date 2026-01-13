@@ -1,11 +1,13 @@
 import { useRouteContext } from '@tanstack/react-router';
 import { useUpdateProfile } from '../mutations/update-profile.mutation';
 import { useState } from 'react';
+import { useUploadAvatar } from '../mutations/upload-avatar.mutation';
 
 export default function ProfilePage() {
   const { user } = useRouteContext({ from: '__root__' });
   const [bio, setBio] = useState(user?.bio ?? '');
   const updateProfile = useUpdateProfile();
+  const uploadAvatar = useUploadAvatar();
 
   if (!user) {
     return (
@@ -28,22 +30,40 @@ export default function ProfilePage() {
       {/* Identity */}
       <div className="card bg-base-100 shadow-sm">
         <div className="card-body flex gap-6 sm:flex-row">
-          {user?.avatarUrl ? (
-            <div className="avatar">
-              <img
-                src={user.avatarUrl}
-                alt={user.username}
-                className="h-16 w-16 rounded-full"
-              />
-            </div>
-          ) : (
-            <div className="avatar avatar-placeholder">
-              <div className="bg-neutral text-neutral-content w-16 rounded-full text-xl font-semibold">
-                {user?.username.charAt(0).toUpperCase()}
+          <div className="flex flex-col gap-4">
+            {user?.avatarUrl ? (
+              <div className="avatar">
+                <img
+                  src={user.avatarUrl}
+                  alt={user.username}
+                  className="h-16 w-16 rounded-full"
+                />
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="avatar avatar-placeholder">
+                <div className="bg-neutral text-neutral-content w-16 rounded-full text-xl font-semibold">
+                  {user?.username.charAt(0).toUpperCase()}
+                </div>
+              </div>
+            )}
 
+            <label className="btn btn-sm btn-outline">
+              Change avatar
+              <input
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) uploadAvatar.mutate(file);
+                }}
+                disabled={uploadAvatar.isPending}
+              />
+              {uploadAvatar.isPending && (
+                <p className="text-sm opacity-70">Uploading avatar…</p>
+              )}
+            </label>
+          </div>
           <div className="space-y-1">
             <h2 className="text-xl font-semibold">{user.username}</h2>
             <p className="text-sm text-neutral-600">{user.email}</p>
@@ -61,11 +81,6 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
-      </div>
-      {/* Meta */}
-      <div className="text-sm text-neutral-500">
-        Member since{' '}
-        {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '—'}
       </div>
 
       {/* Bio */}
@@ -105,6 +120,11 @@ export default function ProfilePage() {
             </div>
           </form>
         </div>
+      </div>
+      {/* Meta */}
+      <div className="text-sm text-neutral-500">
+        Member since{' '}
+        {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '—'}
       </div>
     </div>
   );

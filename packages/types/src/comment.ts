@@ -4,6 +4,7 @@ export type Comment = {
   author: {
     id: string;
     username: string;
+    avatarUrl: string | null;
   };
   postId: string;
   parentId: string | null;

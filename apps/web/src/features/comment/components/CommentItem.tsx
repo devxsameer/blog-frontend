@@ -21,13 +21,24 @@ export default function CommentItem({
     <div className="flex items-stretch">
       {/* avatar */}
       <div className="flex min-h-full flex-col items-center gap-2">
-        <div className="avatar avatar-placeholder">
-          <div className="bg-neutral text-neutral-content w-8 rounded-full">
-            <span className="text-sm font-medium">
-              {comment.author.username[0].toUpperCase()}
-            </span>
+        {comment.author?.avatarUrl ? (
+          <div className="avatar">
+            <div className="ring-neutral ring-offset-base-100 h-8 w-8 rounded-full ring-2 ring-offset-2">
+              <img
+                src={comment.author.avatarUrl}
+                alt={comment.author.username}
+              />
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="avatar avatar-placeholder">
+            <div className="bg-neutral text-neutral-content w-8 rounded-full">
+              <span className="text-sm font-medium">
+                {comment.author?.username[0]}
+              </span>
+            </div>
+          </div>
+        )}
         <span className="bg-neutral-content w-0.5 grow" />
       </div>
 

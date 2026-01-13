@@ -11,8 +11,10 @@ export default function AvatarUploader() {
       await avatarApi.updateAvatar(url);
       return url;
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['me'] });
+    onSuccess: (avatarUrl) => {
+      queryClient.setQueryData(['me'], (old: any) =>
+        old ? { ...old, avatarUrl } : old,
+      );
     },
   });
 
