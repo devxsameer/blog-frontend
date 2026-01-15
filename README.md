@@ -1,6 +1,17 @@
 # 📝 Modern Blog Platform
 
-A **production-grade full-stack blog platform** built with modern React patterns, featuring a public-facing blog and a role-based admin dashboard. Built as a real-world portfolio project demonstrating scalable frontend architecture, type-safe API patterns, and professional authentication flows.
+A **production-grade full-stack blog platform** built to demonstrate
+**real-world frontend architecture and API-driven application design**.
+
+This project focuses on:
+
+- Secure authentication flows (JWT + refresh tokens)
+- Type-safe data fetching at scale
+- Optimistic UI patterns
+- Clean separation between UI, routing, and server state
+
+It is intentionally engineered beyond tutorial scope to reflect
+how modern product teams structure React applications.
 
 [![React](https://img.shields.io/badge/React-19-61dafb?logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178c6?logo=typescript)](https://www.typescriptlang.org/)
@@ -17,9 +28,25 @@ A **production-grade full-stack blog platform** built with modern React patterns
 
 ---
 
+## 📸 Screenshots
+
+### Public Blog
+
+![Post](./screenshots/post_sc.png)
+![Post Detail with Comments](./screenshots/post_comments.png)
+
+### Admin Dashboard
+
+![Dashboard Analytics](./screenshots/dashboard_analytics.png)
+![Post Editor](./screenshots/create_post.png)
+
+---
+
 ## ✨ Key Features
 
 ### 🌍 Public Blog ([`apps/web`](apps/web))
+
+_Focus: data-heavy UI, pagination, and auth-aware interactions_
 
 - **📖 Post Browsing** – Infinite scroll with cursor-based pagination
 - **💬 Nested Comments** – Tree-structured comment system with reply threading
@@ -30,6 +57,8 @@ A **production-grade full-stack blog platform** built with modern React patterns
 
 ### 🎛️ Admin Dashboard ([`apps/dashboard`](apps/dashboard))
 
+_Focus: protected routes, role-based access, and mutation-heavy workflows_
+
 - **📝 Post Management** – Create, edit, and delete posts with markdown editor
 - **📊 Analytics Dashboard** – Post views, likes, and engagement metrics
 - **👥 User Management** – Admin-only user list with role/status filtering
@@ -38,6 +67,8 @@ A **production-grade full-stack blog platform** built with modern React patterns
 - **🖼️ Asset Uploads** – Avatar management with Cloudinary integration
 
 ### 📦 Shared Packages ([`packages/*`](packages))
+
+_Focus: shared contracts, API boundaries, and auth consistency_
 
 - **`@blog/api-client`** – Type-safe API client with auth handling
 - **`@blog/types`** – Shared TypeScript types across apps
@@ -48,7 +79,7 @@ A **production-grade full-stack blog platform** built with modern React patterns
 
 ## 🎯 Why This Project Exists
 
-This isn't a tutorial clone—it's a **real production-style application** built to demonstrate professional frontend engineering skills:
+This isn't a tutorial clone—it's a **real production-style application** built to demonstrate **frontend engineering with strong backend awareness**:
 
 ✅ **Type-safe data fetching** with TanStack Query mutations and loaders  
 ✅ **File-based routing** with TanStack Router and automatic code splitting  
@@ -56,7 +87,8 @@ This isn't a tutorial clone—it's a **real production-style application** built
 ✅ **Secure authentication** with JWT + refresh token rotation  
 ✅ **Monorepo architecture** with shared domain logic  
 ✅ **Clean separation of concerns** (features, layouts, routes)  
-✅ **Production error handling** with user-friendly fallbacks
+✅ **Production error handling** with user-friendly fallbacks  
+✅ Designed to integrate with a production-grade REST API I built separately
 
 Built to showcase skills needed for **real engineering teams**, not just side projects.
 
@@ -76,7 +108,7 @@ Built to showcase skills needed for **real engineering teams**, not just side pr
 | **Vite**                   | Lightning-fast dev server and build tool        |
 | **Markdown Rendering**     | `react-markdown` with syntax highlighting       |
 
-### Backend (Separate Repository)
+### Backend (Separate Repository – Linked Below)
 
 | Technology            | Purpose                          |
 | --------------------- | -------------------------------- |
@@ -87,9 +119,15 @@ Built to showcase skills needed for **real engineering teams**, not just side pr
 | **JWT**               | Stateless authentication         |
 | **Cloudinary**        | Image hosting and transformation |
 
+The backend is implemented as a separate production-grade REST API
+and is linked from this repository.
+
 ---
 
 ## 🗂️ Project Structure
+
+This monorepo is organized by **application boundaries first** and
+**features second**, mirroring how real teams scale React codebases.
 
 ```
 blog-platform/
@@ -148,13 +186,16 @@ blog-platform/
 
 ## 🔐 Authentication Architecture
 
+> This section highlights the high-level auth flow.
+> Detailed backend implementation lives in the API repository.
+
 ### Token Flow
 
 ```mermaid
 sequenceDiagram
     User->>API: POST /auth/login
     API->>User: { accessToken, refreshToken (httpOnly cookie) }
-    User->>tokenStore: Store accessToken in localStorage
+    User->>tokenStore: Store accessToken in memory
     User->>API: GET /api/posts (with Bearer token)
     API->>User: 401 if expired
     User->>API: POST /auth/refresh (with cookie)
@@ -164,10 +205,11 @@ sequenceDiagram
 
 ### Key Design Decisions
 
-- **Access tokens** stored in `localStorage` for client-side access
-- **Refresh tokens** in `httpOnly` cookies (XSS protection)
-- **Automatic token refresh** via TanStack Query error handling
-- **Optimistic logout** clears tokens immediately, server call is optional
+- **Access tokens stored in memory**, not localStorage, to reduce XSS risk
+- **Refresh tokens** stored in `httpOnly` cookies for session recovery
+- **Session restoration** handled via `/auth/refresh` on app load
+- **Automatic retry + refresh** integrated into the shared API client
+- **Optimistic logout** clears in-memory tokens immediately
 
 **Implementation:** See [`packages/api-client/src/http/auth-http.ts`](packages/api-client/src/http/auth-http.ts)
 
@@ -175,9 +217,12 @@ sequenceDiagram
 
 ## 🔄 Data Fetching Patterns
 
+Below are representative examples of how server state,
+routing, and mutations are coordinated across the app.
+
 ### TanStack Query + Router Integration
 
-#### 1. **Route Loaders** (Server-State Prefetching)
+#### 1. **Route Loaders** (Auth-aware data loading)
 
 ```tsx
 // apps/dashboard/src/routes/dashboard/index.tsx
@@ -374,20 +419,6 @@ pnpm build
 
 ---
 
-## 📸 Screenshots
-
-### Public Blog
-
-![Post](./apps/dashboard/public/screenshots/post_sc.png)
-![Post Detail with Comments](./apps/dashboard/public/screenshots/post_comments.png)
-
-### Admin Dashboard
-
-![Dashboard Analytics](./apps/dashboard/public/screenshots/dashboard_analytics.png)
-![Post Editor](./apps/dashboard/public/screenshots/create_post.png)
-
----
-
 ## 🛠️ Available Scripts
 
 | Command                       | Description                        |
@@ -426,7 +457,8 @@ This project demonstrates patterns from:
 
 ## 👤 Author
 
-**Sameer**  
+**Sameer — Junior Backend / Full-Stack Engineer**
+
 Portfolio: [devxsameer.me](https://devxsameer.me)  
 GitHub: [@devxsameer](https://github.com/devxsameer)  
 LinkedIn: [@devxsameer](https://linkedin.com/in/devxsameer)
