@@ -30,7 +30,7 @@ export default function PostPage() {
   }
 
   return (
-    <>
+    <div>
       <Breadcrumbs dynamicLabel={post.title} />
       <div>
         <PostContent post={post} />
@@ -40,6 +40,6 @@ export default function PostPage() {
           <CommentsSection postSlug={postSlug} comments={comments ?? []} />
         )}
       </div>
-    </>
+    </div>
   );
 }
