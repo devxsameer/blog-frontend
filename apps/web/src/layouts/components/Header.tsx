@@ -54,13 +54,21 @@ export default function Header() {
           ) : (
             <div className="dropdown dropdown-end">
               <label tabIndex={0} className="btn btn-ghost gap-2">
-                <div className="avatar avatar-placeholder">
-                  <div className="bg-neutral text-neutral-content w-8 rounded-full">
-                    <span className="text-sm font-medium">
-                      {user.username[0].toUpperCase()}
-                    </span>
+                {user.avatarUrl ? (
+                  <div className="avatar">
+                    <div className="ring-neutral ring-offset-base-100 h-8 w-8 rounded-full ring-2 ring-offset-2">
+                      <img src={user.avatarUrl} alt={user.username} />
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="avatar avatar-placeholder">
+                    <div className="bg-neutral text-neutral-content w-8 rounded-full">
+                      <span className="text-sm font-medium">
+                        {user.username[0].toUpperCase()}
+                      </span>
+                    </div>
+                  </div>
+                )}
                 <span className="hidden text-sm font-medium sm:inline">
                   {user.username}
                 </span>

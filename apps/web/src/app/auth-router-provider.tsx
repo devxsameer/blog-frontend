@@ -1,24 +1,14 @@
 import { RouterProvider } from '@tanstack/react-router';
 import { router } from './router';
-import { useAuthQuery } from '@/features/auth/auth.query';
+import { useAuth } from '@/features/auth/auth.query';
 import { useEffect } from 'react';
 
 export function AuthRouterProvider() {
-  const { data: user, isFetching } = useAuthQuery();
+  const { data: user } = useAuth();
 
   useEffect(() => {
-    if (!isFetching) {
-      router.invalidate();
-    }
-  }, [isFetching, user]);
-
-  if (isFetching) {
-    return (
-      <div className="fixed inset-0 grid place-items-center">
-        <span className="loading loading-spinner loading-lg" />
-      </div>
-    );
-  }
+    router.invalidate();
+  }, [user]);
 
   return <RouterProvider router={router} context={{ user }} />;
 }

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { commentsApi } from '@blog/api-client';
-import type { Comment } from '@blog/types';
+import type { Comment, User } from '@blog/types';
 
 export function useCreateComment(postSlug: string) {
   const queryClient = useQueryClient();
@@ -22,17 +22,27 @@ export function useCreateComment(postSlug: string) {
       const previous =
         queryClient.getQueryData<Comment[]>(['comments', postSlug]) ?? [];
 
+      const user = queryClient.getQueryData<User>(['me']);
+
+      if (!user) return;
+
       const optimistic: Comment = {
         id: crypto.randomUUID(),
         content,
-        parentId,
+        parentId: parentId ?? null,
         createdAt: new Date().toISOString(),
-        author: { id: 'me', username: 'You' },
-      } as Comment;
+        author: {
+          id: user.id,
+          username: user.username,
+          avatarUrl: user.avatarUrl ?? null,
+        },
+        authorId: user.id,
+        postId: crypto.randomUUID(),
+      };
 
       queryClient.setQueryData<Comment[]>(
         ['comments', postSlug],
-        (old = []) => [...old, optimistic],
+        (old = []) => [optimistic, ...old],
       );
 
       return { previous };

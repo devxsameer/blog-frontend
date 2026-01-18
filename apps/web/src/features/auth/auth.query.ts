@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { authApi } from '@blog/api-client';
 import type { User } from '@blog/types';
 
-export function useAuthQuery() {
+export function useAuth() {
   return useQuery<User | null>({
     queryKey: ['me'],
     queryFn: async () => {

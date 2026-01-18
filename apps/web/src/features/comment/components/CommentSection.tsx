@@ -1,8 +1,9 @@
-import { Link, useRouteContext } from '@tanstack/react-router';
+import { Link } from '@tanstack/react-router';
 import { buildTree } from '../utils/buildTree';
 import CommentForm from './CommentForm';
 import CommentList from './CommentList';
 import type { Comment } from '@blog/types';
+import { useAuth } from '@/features/auth/auth.query';
 
 export default function CommentsSection({
   postSlug,
@@ -11,7 +12,7 @@ export default function CommentsSection({
   postSlug: string;
   comments: Comment[];
 }) {
-  const { user } = useRouteContext({ from: '__root__' });
+  const { data: user } = useAuth();
   const tree = buildTree(comments);
 
   return (

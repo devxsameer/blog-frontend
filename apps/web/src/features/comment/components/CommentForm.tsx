@@ -25,7 +25,7 @@ export default function CommentForm({
           { content, parentId },
           {
             onSuccess: () => {
-              if (textareaRef.current) textareaRef.current.value = '';
+              textareaRef.current!.value = '';
               onSuccess?.();
             },
           },
