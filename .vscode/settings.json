@@ -10,7 +10,8 @@
     "api-client",
     "shared",
     "users",
-    "seo"
+    "seo",
+    "ui"
   ],
   "typescript.tsserver.maxTsServerMemory": 2048,
   "typescript.disableAutomaticTypeAcquisition": true,

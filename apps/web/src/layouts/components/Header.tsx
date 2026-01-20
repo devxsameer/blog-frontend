@@ -1,20 +1,20 @@
+import { useAuth } from '@/features/auth/auth.query';
 import { useLogout } from '@/features/auth/mutations/logout.mutation';
-import { Link, useRouteContext } from '@tanstack/react-router';
+import { Avatar } from '@/shared/components/Avatar';
+import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 
 export default function Header() {
-  const { user } = useRouteContext({ from: '__root__' });
+  const { data: user, isLoading } = useAuth();
+  const logoutMutation = useLogout();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const logoutMutation = useLogout();
-
   return (
-    <header className="bg-base-100/80 border-base-300 sticky top-0 z-50 border-b backdrop-blur">
-      <div className="navbar mx-auto max-w-6xl px-4">
-        {/* Left */}
+    <header className="border-base-content/20 sticky top-0 z-50 border-b backdrop-blur">
+      <div className="navbar mx-auto min-h-12 max-w-6xl px-4 py-1.5">
         <div className="navbar-start">
-          <Link to="/" className="flex flex-col leading-none">
-            <span className="text-xl font-bold tracking-tight">
+          <Link to="/" className="flex flex-col">
+            <span className="text-xl leading-tight font-bold">
               Blog<span className="text-neutral-400">.</span>
             </span>
             <span className="text-sm text-neutral-500">
@@ -24,11 +24,15 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* Center (Desktop nav) */}
+        {/* Desktop nav */}
         <div className="navbar-center hidden md:flex">
-          <ul className="menu menu-horizontal gap-2">
-            <NavItem to="/">Home</NavItem>
-            <NavItem to="/posts">Posts</NavItem>
+          <ul className="menu menu-horizontal gap-2 py-0">
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/posts">Posts</Link>
+            </li>
             <li>
               <a href="https://devxsameer.me" target="_blank" rel="noreferrer">
                 Portfolio
@@ -39,7 +43,9 @@ export default function Header() {
 
         {/* Right */}
         <div className="navbar-end gap-2">
-          {!user ? (
+          {isLoading ? (
+            <AuthSkeleton />
+          ) : !user ? (
             <>
               <Link to="/auth/login" className="btn btn-ghost btn-sm">
                 Login
@@ -50,22 +56,8 @@ export default function Header() {
             </>
           ) : (
             <div className="dropdown dropdown-end">
-              <label tabIndex={0} className="btn btn-ghost gap-2">
-                {user.avatarUrl ? (
-                  <div className="avatar">
-                    <div className="ring-neutral ring-offset-base-100 h-8 w-8 rounded-full ring-2 ring-offset-2">
-                      <img src={user.avatarUrl} alt={user.username} />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="avatar avatar-placeholder">
-                    <div className="bg-neutral text-neutral-content w-8 rounded-full">
-                      <span className="text-sm font-medium">
-                        {user.username[0].toUpperCase()}
-                      </span>
-                    </div>
-                  </div>
-                )}
+              <label tabIndex={0} className="btn btn-ghost btn-sm gap-2">
+                <Avatar src={user.avatarUrl} name={user.username} size={32} />
                 <span className="hidden text-sm font-medium sm:inline">
                   {user.username}
                 </span>
@@ -73,7 +65,7 @@ export default function Header() {
 
               <ul
                 tabIndex={0}
-                className="menu dropdown-content bg-base-100 rounded-box mt-3 w-52 p-2 shadow"
+                className="menu dropdown-content rounded-box bg-base-100 mt-3 w-52 p-2 shadow"
               >
                 <li>
                   <Link to="/profile">Profile</Link>
@@ -101,84 +93,53 @@ export default function Header() {
 
           {/* Mobile toggle */}
           <button
-            className="btn btn-ghost md:hidden"
-            onClick={() => setMobileOpen((p) => !p)}
+            className="btn btn-sm btn-ghost text-base md:hidden"
+            onClick={() => setMobileOpen((v) => !v)}
             aria-label="Toggle menu"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              {mobileOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
+            ☰
           </button>
         </div>
       </div>
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="border-base-300 bg-base-100 border-t md:hidden">
-          <ul className="menu gap-1 p-4">
-            <NavItem to="/" onClick={() => setMobileOpen(false)}>
-              Home
-            </NavItem>
-            <NavItem to="/posts" onClick={() => setMobileOpen(false)}>
-              Posts
-            </NavItem>
-            <NavItem to="/portfolio" onClick={() => setMobileOpen(false)}>
-              Portfolio
-            </NavItem>
+        <div className="bg-base-100 border-base-content/20 border-t md:hidden">
+          <ul className="menu p-4">
+            <li>
+              <Link to="/" onClick={() => setMobileOpen(false)}>
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link to="/posts" onClick={() => setMobileOpen(false)}>
+                Posts
+              </Link>
+            </li>
+            <li>
+              <a href="https://devxsameer.me" target="_blank" rel="noreferrer">
+                Portfolio
+              </a>
+            </li>
 
-            <div className="divider my-2" />
+            <div className="divider" />
 
             {!user ? (
               <>
-                <NavItem to="/auth/login" onClick={() => setMobileOpen(false)}>
-                  Login
-                </NavItem>
-                <NavItem to="/auth/signup" onClick={() => setMobileOpen(false)}>
-                  Sign up
-                </NavItem>
+                <li>
+                  <Link to="/auth/login">Login</Link>
+                </li>
+                <li>
+                  <Link to="/auth/signup">Sign up</Link>
+                </li>
               </>
             ) : (
               <>
-                <NavItem to="/profile" onClick={() => setMobileOpen(false)}>
-                  Profile
-                </NavItem>
                 <li>
-                  <a
-                    href="https://dashboard.blog.devxsameer.me"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Dashboard
-                  </a>
+                  <Link to="/profile">Profile</Link>
                 </li>
                 <li>
-                  <button
-                    onClick={() => {
-                      logoutMutation.mutate();
-                      setMobileOpen(false);
-                    }}
-                    disabled={logoutMutation.isPending}
-                  >
+                  <button onClick={() => logoutMutation.mutate()}>
                     Logout
                   </button>
                 </li>
@@ -191,28 +152,13 @@ export default function Header() {
   );
 }
 
-/* ---------------- helpers ---------------- */
+/* -------- skeleton -------- */
 
-function NavItem({
-  to,
-  children,
-  onClick,
-}: {
-  to: string;
-  children: React.ReactNode;
-  onClick?: () => void;
-}) {
+function AuthSkeleton() {
   return (
-    <li>
-      <Link
-        to={to}
-        onClick={onClick}
-        activeProps={{
-          className: 'font-medium underline underline-offset-4',
-        }}
-      >
-        {children}
-      </Link>
-    </li>
+    <div className="flex items-center gap-2">
+      <div className="skeleton h-10 w-10 rounded-full" />
+      <div className="skeleton h-4 w-18" />
+    </div>
   );
 }
