@@ -1,32 +1,16 @@
 import { ApiClientError, ValidationError } from '@blog/api-client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { login } from '../auth.api';
 import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
+import { useLogin } from '../mutations/login.mutation';
 
 export default function LoginPage() {
-  const queryClient = useQueryClient();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [issues, setIssues] = useState<ValidationError['issues'] | null>(null);
 
-  const loginMutation = useMutation({
-    mutationFn: () => login(email, password),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['me'] });
-    },
-    onError: (err) => {
-      if (err instanceof ValidationError) {
-        setIssues(err.issues);
-      } else if (err instanceof ApiClientError) {
-        setError(err.message);
-      } else {
-        setError('Unexpected error occurred');
-        console.error(err);
-      }
-    },
-  });
+  const loginMutation = useLogin();
+
   return (
     <div className="card bg-base-100 max-w-sm shadow-sm">
       <div className="card-body">
@@ -40,7 +24,10 @@ export default function LoginPage() {
           {issues && issues.length > 0 && (
             <div className="mb-2">
               {issues?.map((issue) => (
-                <p key={issue.path} className="text-red-500">
+                <p
+                  key={`${issue.path}-${issue.message}`}
+                  className="text-red-500"
+                >
                   {issue.message}
                 </p>
               ))}
@@ -50,7 +37,23 @@ export default function LoginPage() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              loginMutation.mutate();
+              setError(null);
+              setIssues(null);
+              loginMutation.mutate(
+                { email, password },
+                {
+                  onError: (err) => {
+                    if (err instanceof ValidationError) {
+                      setIssues(err.issues);
+                    } else if (err instanceof ApiClientError) {
+                      setError(err.message);
+                    } else {
+                      setError('Unexpected error occurred');
+                      console.error(err);
+                    }
+                  },
+                },
+              );
             }}
           >
             {error && (
@@ -81,7 +84,11 @@ export default function LoginPage() {
               className="input mb-4 w-full"
             />
 
-            <button type="submit" className="btn btn-neutral btn-block">
+            <button
+              type="submit"
+              disabled={loginMutation.isPending}
+              className="btn btn-neutral btn-block"
+            >
               {loginMutation.isPending ? 'Authenticating…' : 'Sign In'}
             </button>
           </form>

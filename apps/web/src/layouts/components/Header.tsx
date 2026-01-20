@@ -1,19 +1,12 @@
-import { logout } from '@/features/auth/auth.api';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useLogout } from '@/features/auth/mutations/logout.mutation';
 import { Link, useRouteContext } from '@tanstack/react-router';
 import { useState } from 'react';
 
 export default function Header() {
   const { user } = useRouteContext({ from: '__root__' });
-  const queryClient = useQueryClient();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const logoutMutation = useMutation({
-    mutationFn: logout,
-    onSuccess: () => {
-      queryClient.setQueryData(['me'], null);
-    },
-  });
+  const logoutMutation = useLogout();
 
   return (
     <header className="bg-base-100/80 border-base-300 sticky top-0 z-50 border-b backdrop-blur">
