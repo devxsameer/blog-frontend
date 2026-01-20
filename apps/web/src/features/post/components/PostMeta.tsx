@@ -1,11 +1,11 @@
 import type { PostContent } from '@blog/types';
 import { HeartIcon } from '@heroicons/react/24/solid';
 import { format } from 'date-fns';
-import { useRouteContext } from '@tanstack/react-router';
 import { useToggleLike } from '../mutations/like-post.mutation';
+import { useAuth } from '@/features/auth/auth.query';
 
 export default function PostMeta({ post }: { post: PostContent }) {
-  const { user } = useRouteContext({ from: '__root__' });
+  const { data: user } = useAuth();
   const toggleLikeMutation = useToggleLike(post.slug);
 
   const isPending = toggleLikeMutation.isPending;
