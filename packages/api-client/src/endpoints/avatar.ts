@@ -2,10 +2,11 @@ import { authHttp } from '../http/auth-http';
 import { unwrap } from '../unwrap';
 
 export type AvatarUploadSignature = {
-  cloudName: string;
-  apiKey: string;
-  timestamp: number;
-  signature: string;
+  uploadUrl: string;
+  fields: {
+    api_key: string;
+    signature: string;
+  } & Record<string, string>;
   publicId: string;
 };
 
@@ -16,10 +17,10 @@ export const avatarApi = {
     return unwrap<AvatarUploadSignature>(status, body);
   },
 
-  async updateAvatar(avatarUrl: string) {
+  async updateAvatar(publicId: string) {
     const { status, body } = await authHttp('/api/users/me/avatar', {
       method: 'PUT',
-      body: JSON.stringify({ avatarUrl }),
+      body: JSON.stringify({ publicId }),
     });
 
     return unwrap(status, body);

@@ -36,7 +36,11 @@ export default function Header() {
           <ul className="menu menu-horizontal gap-2">
             <NavItem to="/">Home</NavItem>
             <NavItem to="/posts">Posts</NavItem>
-            <NavItem to="/portfolio">Portfolio</NavItem>
+            <li>
+              <a href="https://devxsameer.me" target="_blank" rel="noreferrer">
+                Portfolio
+              </a>
+            </li>
           </ul>
         </div>
 

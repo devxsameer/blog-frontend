@@ -1,101 +1,42 @@
-// dashboard/src/features/profile/pages/ProfilePage.tsx
-import { Route } from '@/routes/dashboard/profile';
-import AvatarUploader from '../components/AvatarUploader';
+import IdentityInfo from '../components/IdentityInfo';
 import ProfileForm from '../components/ProfileForm';
+import { useAuth } from '@/features/auth/auth.query';
 
 export default function ProfilePage() {
-  const { user } = Route.useRouteContext();
+  const { data: user } = useAuth();
+
+  if (!user) {
+    return (
+      <div className="alert alert-warning">
+        Unable to load profile information.
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
       {/* Header */}
-      <header className="flex flex-col gap-1">
+      <header>
         <h1 className="text-2xl font-bold tracking-tight">Profile</h1>
-        <p className="text-base-content/70">Your account information</p>
+        <p className="text-base-content/60 text-sm">
+          Manage your account information
+        </p>
       </header>
 
-      <div className="flex flex-wrap gap-6">
-        {/* Profile card */}
-        <div className="card bg-base-100 max-w-3xl grow shadow-sm">
-          <div className="card-body space-y-6">
-            <div className="flex items-center gap-6">
-              {user?.avatarUrl ? (
-                <div className="avatar">
-                  <img
-                    src={user.avatarUrl}
-                    alt={user.username}
-                    className="h-16 w-16 rounded-full"
-                  />
-                </div>
-              ) : (
-                <div className="avatar avatar-placeholder">
-                  <div className="bg-neutral text-neutral-content w-16 rounded-full text-xl font-semibold">
-                    {user?.username.charAt(0).toUpperCase()}
-                  </div>
-                </div>
-              )}
-
-              <div>
-                <h2 className="text-xl font-semibold">{user?.username}</h2>
-                <p className="text-base-content/70">{user?.email}</p>
-
-                <span
-                  className={`badge mt-2 capitalize ${
-                    user?.role === 'admin'
-                      ? 'badge-error'
-                      : user?.role === 'author'
-                        ? 'badge-primary'
-                        : 'badge-ghost'
-                  }`}
-                >
-                  {user?.role}
-                </span>
-              </div>
-            </div>
-
-            <div className="divider" />
-
-            {/* Bio */}
-            <div>
-              <h3 className="mb-1 font-semibold">Bio</h3>
-
-              {user?.bio ? (
-                <p className="text-base-content/80 leading-relaxed">
-                  {user.bio}
-                </p>
-              ) : (
-                <p className="text-base-content/50 italic">No bio provided</p>
-              )}
-            </div>
-
-            <div className="divider" />
-
-            {/* Meta */}
-            <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
-              <div>
-                <span className="text-base-content/60 block">User ID</span>
-                <span className="font-mono text-xs">{user?.id}</span>
-              </div>
-
-              {user?.createdAt && (
-                <div>
-                  <span className="text-base-content/60 block">Joined</span>
-                  <span>{new Date(user.createdAt).toLocaleDateString()}</span>
-                </div>
-              )}
-            </div>
-          </div>
+      {/* Identity */}
+      <div className="card bg-base-100 shadow-sm">
+        <div className="card-body space-y-6">
+          <IdentityInfo user={user} />
         </div>
-        <div className="card bg-base-100 shadow-sm">
-          <div className="card-body space-y-6">
-            <h2 className="text-xl font-semibold">Edit profile</h2>
-            <div className="flex items-center gap-6">
-              <AvatarUploader />
-            </div>
-            <div className="divider" />
-            {/* Profile form */}
-            <ProfileForm user={user} />
-          </div>
+      </div>
+
+      {/* Profile settings */}
+      <div className="card bg-base-100 shadow-sm">
+        <div className="card-body space-y-6">
+          <h2 className="text-base-content/80 text-base font-semibold">
+            Edit profile
+          </h2>
+          <ProfileForm user={user} />
         </div>
       </div>
     </div>

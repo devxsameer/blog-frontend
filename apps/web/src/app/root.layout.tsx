@@ -6,7 +6,7 @@ export function RootLayout() {
   return (
     <div className="font-outfit flex min-h-screen flex-col hover:col-auto">
       <Header />
-      <div className="mx-auto w-full max-w-6xl p-4 py-6">
+      <div className="mx-auto min-h-screen w-full max-w-6xl p-4 py-6">
         <Outlet />
       </div>
       <Footer />

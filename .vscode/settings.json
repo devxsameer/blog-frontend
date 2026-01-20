@@ -8,7 +8,8 @@
     "comments",
     "types",
     "api-client",
-    "shared"
+    "shared",
+    "users"
   ],
   "typescript.tsserver.maxTsServerMemory": 2048,
   "typescript.disableAutomaticTypeAcquisition": true,

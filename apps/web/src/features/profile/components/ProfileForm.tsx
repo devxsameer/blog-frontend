@@ -57,7 +57,7 @@ export default function ProfileForm({ user }: { user: User }) {
       <label className="fieldset">
         <span className="fieldset-label font-semibold">Bio</span>
         <textarea
-          className="textarea textarea-bordered"
+          className="textarea textarea-bordered w-full"
           rows={4}
           value={bio}
           onChange={(e) => setBio(e.target.value)}

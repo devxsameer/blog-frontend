@@ -3,6 +3,7 @@ import { useRouteContext } from '@tanstack/react-router';
 import { useDeleteComment } from '../mutations/delete-comment.mutation';
 import CommentForm from './CommentForm';
 import type { CommentNode } from '../types';
+import { Avatar } from '@/shared/components/Avatar';
 
 export default function CommentItem({
   postSlug,
@@ -21,24 +22,11 @@ export default function CommentItem({
     <div className="flex items-stretch">
       {/* avatar */}
       <div className="flex min-h-full flex-col items-center gap-2">
-        {comment.author?.avatarUrl ? (
-          <div className="avatar">
-            <div className="ring-neutral ring-offset-base-100 h-8 w-8 rounded-full ring-2 ring-offset-2">
-              <img
-                src={comment.author.avatarUrl}
-                alt={comment.author.username}
-              />
-            </div>
-          </div>
-        ) : (
-          <div className="avatar avatar-placeholder">
-            <div className="bg-neutral text-neutral-content w-8 rounded-full">
-              <span className="text-sm font-medium">
-                {comment.author?.username[0]}
-              </span>
-            </div>
-          </div>
-        )}
+        <Avatar
+          src={comment.author.avatarUrl}
+          name={comment.author.username}
+          size={32}
+        />
         <span className="bg-neutral-content w-0.5 grow" />
       </div>
 

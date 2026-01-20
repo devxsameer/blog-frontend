@@ -1,13 +1,9 @@
-import { useRouteContext } from '@tanstack/react-router';
-import { useUpdateProfile } from '../mutations/update-profile.mutation';
-import { useState } from 'react';
-import { useUploadAvatar } from '../mutations/upload-avatar.mutation';
+import { useAuth } from '@/features/auth/auth.query';
+import ProfileForm from '../components/ProfileForm';
+import IdentityInfo from '../components/IdentityInfo';
 
 export default function ProfilePage() {
-  const { user } = useRouteContext({ from: '__root__' });
-  const [bio, setBio] = useState(user?.bio ?? '');
-  const updateProfile = useUpdateProfile();
-  const uploadAvatar = useUploadAvatar();
+  const { data: user } = useAuth();
 
   if (!user) {
     return (
@@ -18,113 +14,29 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="max-w-3xl space-y-8 py-10">
+    <div className="max-w-3xl space-y-8">
       {/* Header */}
       <header>
         <h1 className="text-2xl font-semibold">Your profile</h1>
-        <p className="text-base-content/70">
+        <p className="text-base-content/70 text-sm">
           Account details associated with your activity.
         </p>
       </header>
 
       {/* Identity */}
-      <div className="card bg-base-100 shadow-sm">
-        <div className="card-body flex gap-6 sm:flex-row">
-          <div className="flex flex-col gap-4">
-            {user?.avatarUrl ? (
-              <div className="avatar">
-                <img
-                  src={user.avatarUrl}
-                  alt={user.username}
-                  className="h-16 w-16 rounded-full"
-                />
-              </div>
-            ) : (
-              <div className="avatar avatar-placeholder">
-                <div className="bg-neutral text-neutral-content w-16 rounded-full text-xl font-semibold">
-                  {user?.username.charAt(0).toUpperCase()}
-                </div>
-              </div>
-            )}
-
-            <label className="btn btn-sm btn-outline">
-              Change avatar
-              <input
-                type="file"
-                accept="image/*"
-                hidden
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) uploadAvatar.mutate(file);
-                }}
-                disabled={uploadAvatar.isPending}
-              />
-              {uploadAvatar.isPending && (
-                <p className="text-sm opacity-70">Uploading avatar…</p>
-              )}
-            </label>
-          </div>
-          <div className="space-y-1">
-            <h2 className="text-xl font-semibold">{user.username}</h2>
-            <p className="text-sm text-neutral-600">{user.email}</p>
-
-            <div className="flex gap-2 pt-1">
-              <span className="badge badge-outline capitalize">
-                {user.role}
-              </span>
-
-              {user.emailVerifiedAt ? (
-                <span className="badge badge-success">Verified</span>
-              ) : (
-                <span className="badge badge-warning">Email not verified</span>
-              )}
-            </div>
-          </div>
+      <div className="card bg-base-100 border-base-content/20 border shadow-sm">
+        <div className="card-body space-y-6">
+          <IdentityInfo user={user} />
         </div>
       </div>
 
-      {/* Bio */}
-      <div className="card bg-base-100 shadow-sm">
-        <div className="card-body">
-          <h3 className="font-semibold">Bio</h3>
-
-          <form
-            className="space-y-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              updateProfile.mutate({ bio: bio.trim() || null });
-            }}
-          >
-            <textarea
-              className="textarea textarea-bordered w-full"
-              rows={4}
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              placeholder="Write a short bio about yourself…"
-              disabled={updateProfile.isPending}
-            />
-            {updateProfile.isError && (
-              <p className="text-sm text-red-500">
-                Failed to update profile. Please try again.
-              </p>
-            )}
-
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                disabled={updateProfile.isPending}
-                className="btn btn-neutral btn-sm"
-              >
-                {updateProfile.isPending ? 'Saving…' : 'Save changes'}
-              </button>
-            </div>
-          </form>
+      <div className="card bg-base-100 border-base-content/20 border shadow-sm">
+        <div className="card-body space-y-6">
+          <h2 className="text-base-content/80 text-base font-semibold">
+            Edit profile
+          </h2>
+          <ProfileForm user={user} />
         </div>
-      </div>
-      {/* Meta */}
-      <div className="text-sm text-neutral-500">
-        Member since{' '}
-        {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '—'}
       </div>
     </div>
   );
