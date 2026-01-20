@@ -2,14 +2,19 @@ import PostContent from '@/features/post/components/PostContent';
 import CommentsSection from '../../comment/components/CommentSection';
 import Breadcrumbs from '@/shared/components/Breadcrumbs';
 import { usePostComments } from '../../comment/queries/comments.query';
-import { useLoaderData, useParams } from '@tanstack/react-router';
+import { useLoaderData } from '@tanstack/react-router';
+import { usePost } from '../queries/post.query';
 
 export default function PostPage() {
-  const { post } = useLoaderData({ from: '/posts/$postSlug' });
-  const { postSlug } = useParams({ from: '/posts/$postSlug' });
+  const { post: initialPost } = useLoaderData({ from: '/posts/$postSlug' });
 
-  const { data: comments, isLoading: commentsLoading } =
-    usePostComments(postSlug);
+  const { data: post } = usePost(initialPost);
+
+  if (!post) return null;
+
+  const { data: comments, isLoading: commentsLoading } = usePostComments(
+    post.slug,
+  );
 
   return (
     <div>
@@ -19,7 +24,7 @@ export default function PostPage() {
         {commentsLoading ? (
           <div className="text-sm text-neutral-500">Loading comments…</div>
         ) : (
-          <CommentsSection postSlug={postSlug} comments={comments ?? []} />
+          <CommentsSection postSlug={post.slug} comments={comments ?? []} />
         )}
       </div>
     </div>

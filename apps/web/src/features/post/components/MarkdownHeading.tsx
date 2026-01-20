@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import type { HTMLAttributes } from 'react';
 import type { TocItem } from '../types';
 
@@ -17,13 +18,21 @@ export function createHeadingRenderer(
 
     const text = String(children);
     const id = slugify(text);
-
-    register({ id, text, level });
-
     const Tag = `h${level}` as const;
 
+    const scrollOffset =
+      level === 2
+        ? 'scroll-mt-28'
+        : level === 3
+          ? 'scroll-mt-24'
+          : 'scroll-mt-20';
+
+    useEffect(() => {
+      register({ id, text, level });
+    }, [id, text, level]);
+
     return (
-      <Tag id={id} {...rest}>
+      <Tag id={id} {...rest} className={scrollOffset}>
         {children}
       </Tag>
     );

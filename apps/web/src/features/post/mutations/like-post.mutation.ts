@@ -1,30 +1,32 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { postsApi } from '@blog/api-client';
+import type { PostContent } from '@blog/types';
 
 export function useToggleLike(postSlug: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (liked: boolean) => {
-      if (liked) {
-        await postsApi.like(postSlug);
-      } else {
-        await postsApi.unlike(postSlug);
-      }
+      return liked ? postsApi.like(postSlug) : postsApi.unlike(postSlug);
     },
 
     onMutate: async (liked) => {
-      await queryClient.cancelQueries({ queryKey: ['post', postSlug] });
+      await queryClient.cancelQueries({
+        queryKey: ['post', postSlug],
+      });
 
-      const previousPost = queryClient.getQueryData<any>(['post', postSlug]);
+      const previousPost = queryClient.getQueryData<PostContent>([
+        'post',
+        postSlug,
+      ]);
 
-      queryClient.setQueryData(['post', postSlug], (old: any) => {
+      queryClient.setQueryData<PostContent>(['post', postSlug], (old) => {
         if (!old) return old;
 
         return {
           ...old,
           likedByMe: liked,
-          likeCount: old.likeCount + (liked ? 1 : -1),
+          likeCount: Math.max(0, old.likeCount + (liked ? 1 : -1)),
         };
       });
 
@@ -37,8 +39,10 @@ export function useToggleLike(postSlug: string) {
       }
     },
 
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['post', postSlug] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['post', postSlug],
+      });
     },
   });
 }

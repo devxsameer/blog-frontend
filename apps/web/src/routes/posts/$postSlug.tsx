@@ -28,4 +28,5 @@ export const Route = createFileRoute('/posts/$postSlug')({
     };
   },
   component: PostPage,
+  errorComponent: () => <div className="alert alert-error">Post not found</div>,
 });
